@@ -30,7 +30,7 @@ def aptidao(x):
     regr = MLPRegressor(random_state=1, max_iter=10000, learning_rate_init=learning_rate_init).fit(x_treino, y_treino)
     # pred = regr.predict(x_teste)
     score = regr.score(x_teste, y_teste)
-    return score
+    return -score
 
 pop_i = np.array([[0,1]]*50)
 
