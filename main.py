@@ -4,6 +4,7 @@ from pandas.plotting import scatter_matrix
 import matplotlib.pyplot as plt
 from sklearn.neural_network import MLPRegressor
 from sklearn.model_selection import train_test_split
+from sklearn.metrics import mean_squared_error
 from geneticalgorithm import geneticalgorithm as ga
 import random as rd
 
@@ -38,16 +39,17 @@ def aptidao(x):
                         learning_rate_init=learning_rate_init,
                         solver='sgd',
                         momentum=momentum).fit(x_treino, y_treino)
-    # pred = regr.predict(x_teste)
-    score = regr.score(x_teste, y_teste)
-    return -score
+    pred = regr.predict(x_teste)
+    mse = mean_squared_error(y_teste, pred)
+    # score = regr.score(x_teste, y_teste)
+    return mse
 
 
-algorithm_param = {'max_num_iteration': 10000,
+algorithm_param = {'max_num_iteration': 100000,
                    'population_size': 100,
-                   'mutation_probability': 0.1,
+                   'mutation_probability': 0.05,
                    'elit_ratio': 0.01,
-                   'crossover_probability': 0.5,
+                   'crossover_probability': 0.8,
                    'parents_portion': 0.3,
                    'crossover_type': 'uniform',
                    'max_iteration_without_improv': None}
@@ -57,6 +59,7 @@ pop_i = np.array([[0, 1]]*60)
 model = ga(function=aptidao, dimension=60, function_timeout=300,
            variable_type='int', variable_boundaries=pop_i, algorithm_parameters=algorithm_param)
 model.run()
+
 # print(score)
 # x_linha = np.linspace(0, 60, 1000)
 # plt.plot(y_teste, pred, 'bo')
