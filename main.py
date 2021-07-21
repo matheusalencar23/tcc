@@ -24,14 +24,17 @@ def conversorBinarioReal(binario):
     v = 0
     for i in range(len(binario)):
         v += binario[i] * (2 ** (- i - 1))
-    return v
+    if (v > 0):
+        return v
+    else:
+        return 0.000000001
 
 
 def aptidao(x):
     learning_rate_init = conversorBinarioReal(x[:29])
     momentum = conversorBinarioReal(x[30:])
     regr = MLPRegressor(random_state=1,
-                        max_iter=20000,
+                        max_iter=100000,
                         learning_rate_init=learning_rate_init,
                         solver='sgd',
                         momentum=momentum).fit(x_treino, y_treino)
@@ -40,7 +43,7 @@ def aptidao(x):
     return -score
 
 
-algorithm_param = {'max_num_iteration': 3000,
+algorithm_param = {'max_num_iteration': 10000,
                    'population_size': 100,
                    'mutation_probability': 0.1,
                    'elit_ratio': 0.01,
@@ -51,7 +54,7 @@ algorithm_param = {'max_num_iteration': 3000,
 
 pop_i = np.array([[0, 1]]*60)
 
-model = ga(function=aptidao, dimension=60, function_timeout=60,
+model = ga(function=aptidao, dimension=60, function_timeout=300,
            variable_type='int', variable_boundaries=pop_i, algorithm_parameters=algorithm_param)
 model.run()
 # print(score)
