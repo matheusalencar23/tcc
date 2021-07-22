@@ -20,15 +20,20 @@ x = np.c_[velocidade, temperatura, preenchimento, espessura, orientacao]
 y = resistencia
 x_treino, x_teste, y_treino, y_teste = train_test_split(x, y)
 
-
 def conversorBinarioReal(binario):
     v = 0
     for i in range(len(binario)):
         v += binario[i] * (2 ** (- i - 1))
-    if (v > 0):
+    return v + 0.000000001
+
+def conversorBinarioInteiro(binario):
+    v = 0
+    for i in range(len(binario)):
+        v += binario[len(binario) - i - 1] * 2**(i)
+    if v > 0:
         return v
     else:
-        return 0.000000001
+        return 1
 
 
 def aptidao(x):
@@ -38,6 +43,7 @@ def aptidao(x):
                         max_iter=10000,
                         learning_rate_init=learning_rate_init,
                         solver='sgd',
+                        activation='logistic',
                         momentum=momentum).fit(x_treino, y_treino)
     pred = regr.predict(x_teste)
     mse = mean_squared_error(y_teste, pred)
