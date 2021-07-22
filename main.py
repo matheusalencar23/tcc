@@ -35,16 +35,16 @@ def aptidao(x):
     learning_rate_init = conversorBinarioReal(x[:29])
     momentum = conversorBinarioReal(x[30:])
     regr = MLPRegressor(random_state=1,
-                        max_iter=50000,
+                        max_iter=10000,
                         learning_rate_init=learning_rate_init,
-                        solver='adam',
+                        solver='sgd',
                         momentum=momentum).fit(x_treino, y_treino)
     pred = regr.predict(x_teste)
     mse = mean_squared_error(y_teste, pred)
     return mse
 
 
-algorithm_param = {'max_num_iteration': 20000,
+algorithm_param = {'max_num_iteration': 500,
                    'population_size': 50,
                    'mutation_probability': 0.05,
                    'elit_ratio': 0.01,
@@ -59,7 +59,3 @@ model = ga(function=aptidao, dimension=60, function_timeout=300,
            variable_type='int', variable_boundaries=pop_i, algorithm_parameters=algorithm_param)
 model.run()
 
-# print(score)
-# x_linha = np.linspace(0, 60, 1000)
-# plt.plot(y_teste, pred, 'bo')
-# plt.plot(x_linha, x_linha, 'r')
