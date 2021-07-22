@@ -35,7 +35,7 @@ def aptidao(x):
     learning_rate_init = conversorBinarioReal(x[:29])
     momentum = conversorBinarioReal(x[30:])
     regr = MLPRegressor(random_state=1,
-                        max_iter=100000,
+                        max_iter=50000,
                         learning_rate_init=learning_rate_init,
                         solver='adam',
                         momentum=momentum).fit(x_treino, y_treino)
@@ -44,8 +44,8 @@ def aptidao(x):
     return mse
 
 
-algorithm_param = {'max_num_iteration': 10000,
-                   'population_size': 100,
+algorithm_param = {'max_num_iteration': 20000,
+                   'population_size': 50,
                    'mutation_probability': 0.05,
                    'elit_ratio': 0.01,
                    'crossover_probability': 0.9,
