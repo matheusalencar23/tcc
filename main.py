@@ -66,7 +66,7 @@ algorithm_param = {'max_num_iteration': 500,
 
 pop_i = np.array([[0, 1]]*85)
 
-model = ga(function=aptidao, dimension=100, function_timeout=3000,
+model = ga(function=aptidao, dimension=85, function_timeout=600,
            variable_type='int', variable_boundaries=pop_i, algorithm_parameters=algorithm_param)
 model.run()
 
