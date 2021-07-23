@@ -36,16 +36,16 @@ def conversorBinarioInteiro(binario):
         return int(1)
 
 def aptidao(x):
-    learning_rate_init = conversorBinarioReal(x[0:24])
-    momentum = conversorBinarioReal(x[25:49])
+    learning_rate_init = conversorBinarioReal(x[0:25])
+    momentum = conversorBinarioReal(x[25:50])
     hidden_layer_sizes = (
-        conversorBinarioInteiro(x[50:59]), 
-        conversorBinarioInteiro(x[60:69]), 
-        conversorBinarioInteiro(x[70:79]),
-        conversorBinarioInteiro(x[80:89]),
-        conversorBinarioInteiro(x[90:99]))
+        conversorBinarioInteiro(x[50:60]), 
+        conversorBinarioInteiro(x[60:70]), 
+        conversorBinarioInteiro(x[70:80]),
+        conversorBinarioInteiro(x[80:90]),
+        conversorBinarioInteiro(x[90:100]))
     regr = MLPRegressor(random_state=1,
-                        max_iter=10000,
+                        max_iter=1000,
                         learning_rate_init=learning_rate_init,
                         solver='sgd',
                         activation='logistic',
@@ -66,7 +66,7 @@ algorithm_param = {'max_num_iteration': 500,
 
 pop_i = np.array([[0, 1]]*100)
 
-model = ga(function=aptidao, dimension=100, function_timeout=300,
+model = ga(function=aptidao, dimension=100, function_timeout=3000,
            variable_type='int', variable_boundaries=pop_i, algorithm_parameters=algorithm_param)
 model.run()
 
