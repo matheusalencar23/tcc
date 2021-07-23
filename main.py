@@ -31,9 +31,9 @@ def conversorBinarioInteiro(binario):
     for i in range(len(binario)):
         v += binario[len(binario) - i - 1] * 2**(i)
     if v > 0:
-        return v
+        return int(v)
     else:
-        return 1
+        return int(1)
 
 def aptidao(x):
     learning_rate_init = conversorBinarioReal(x[0:24])
@@ -44,12 +44,12 @@ def aptidao(x):
         conversorBinarioInteiro(x[70:79]),
         conversorBinarioInteiro(x[80:89]),
         conversorBinarioInteiro(x[90:99]))
+    print(hidden_layer_sizes, type(hidden_layer_sizes))
     regr = MLPRegressor(random_state=1,
                         max_iter=10000,
                         learning_rate_init=learning_rate_init,
                         solver='sgd',
                         activation='logistic',
-                        hidden_layer_sizes=hidden_layer_sizes,
                         momentum=momentum).fit(x_treino, y_treino)
     pred = regr.predict(x_teste)
     mse = mean_squared_error(y_teste, pred)
