@@ -41,7 +41,7 @@ def aptidao(x):
         conversorBinarioInteiro(x[6:12]), 
         conversorBinarioInteiro(x[12:]))
     regr = MLPRegressor(random_state=1,
-                        max_iter=5000,
+                        max_iter=50000,
                         solver='adam',
                         activation='relu',
                         hidden_layer_sizes=hidden_layer_sizes).fit(x_treino, y_treino)
