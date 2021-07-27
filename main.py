@@ -47,8 +47,6 @@ def aptidao(x):
                         solver='sgd', activation='logistic',
                         hidden_layer_sizes=hidden_layer_sizes).fit(x_treino, y_treino)
     score = regr.score(x_teste, y_teste)
-    print(x)
-    print(learning_rate_init, momentum, hidden_layer_sizes)
     if score and score > 0:
         return -score
     else:

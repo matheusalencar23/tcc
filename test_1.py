@@ -20,8 +20,6 @@ x = np.c_[velocidade, temperatura, preenchimento, espessura, orientacao]
 y = resistencia
 x_treino, x_teste, y_treino, y_teste = train_test_split(x, y, train_size=0.9, test_size=0.1, random_state=1)
 
-print(x_treino, x_teste, y_treino, y_teste)
-
 def conversorBinarioReal(binario):
     v = 0
     for i in range(len(binario)):
