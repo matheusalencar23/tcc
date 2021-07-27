@@ -41,18 +41,18 @@ def aptidao(x):
         conversorBinarioInteiro(x[6:12]), 
         conversorBinarioInteiro(x[12:]))
     regr = MLPRegressor(random_state=1,
-                        max_iter=50000,
+                        max_iter=5000,
                         solver='adam',
                         activation='relu',
                         hidden_layer_sizes=hidden_layer_sizes).fit(x_treino, y_treino)
     score = regr.score(x_teste, y_teste)
-    if score > 0:
-        return score
+    if score and score > 0:
+        return -score
     else:
         return 0
 
-algorithm_param = {'max_num_iteration': 500,
-                   'population_size': 100,
+algorithm_param = {'max_num_iteration': 200,
+                   'population_size': 10,
                    'mutation_probability': 0.05,
                    'elit_ratio': 0.01,
                    'crossover_probability': 0.9,
