@@ -31,23 +31,18 @@ def conversorBinarioReal(binario):
         return 0.000000001
 
 
-def aptidao(x):
-    learning_rate_init = conversorBinarioReal(x[:29])
-    momentum = conversorBinarioReal(x[30:])
-    print(learning_rate_init, momentum)
+def aptidao():
     regr = MLPRegressor(random_state=1,
-                        max_iter=10000,
-                        learning_rate_init=learning_rate_init,
-                        solver='sgd',
-                        momentum=momentum).fit(x_treino, y_treino)
+                        max_iter=1000000,
+                        solver="adam", 
+                        activation="logistic").fit(x_treino, y_treino)
     score = regr.score(x_teste, y_teste)
     pred = regr.predict(x_teste)
     mse = mean_squared_error(y_teste, pred)
     print(score, mse)
     return pred
 
-ind = np.array([0, 0, 0, 0, 0, 1, 1, 0, 1, 0, 0, 1, 0, 1, 0, 0, 1, 0, 1, 1, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 1, 1, 1, 0, 0, 1, 0, 0])
-pred = aptidao(ind)
+pred = aptidao()
 x_linha = np.linspace(0, 60, 1000)
 plt.plot(y_teste, pred, 'bo')
 plt.plot(x_linha, x_linha, 'r')
