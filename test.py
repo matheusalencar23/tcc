@@ -32,8 +32,8 @@ def conversorBinarioReal(binario):
 
 
 def aptidao():
-    regr = MLPRegressor(random_state=1,
-                        max_iter=1000000,
+    regr = MLPRegressor(random_state=100,
+                        max_iter=1000,
                         solver="adam", 
                         activation="logistic").fit(x_treino, y_treino)
     score = regr.score(x_teste, y_teste)
