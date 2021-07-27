@@ -18,7 +18,7 @@ resistencia = np.asarray(dados.iloc[:, 5])
 
 x = np.c_[velocidade, temperatura, preenchimento, espessura, orientacao]
 y = resistencia
-x_treino, x_teste, y_treino, y_teste = train_test_split(x, y)
+x_treino, x_teste, y_treino, y_teste = train_test_split(x, y, train_size=0.9, test_size=0.1, random_state=1)
 
 def conversorBinarioReal(binario):
     v = 0
@@ -36,23 +36,26 @@ def conversorBinarioInteiro(binario):
         return int(1)
 
 def aptidao(x):
+    learning_rate_init = conversorBinarioReal(x[18:43])
+    momentum = conversorBinarioReal(x[43:])
     hidden_layer_sizes = (
         conversorBinarioInteiro(x[:6]),
         conversorBinarioInteiro(x[6:12]), 
-        conversorBinarioInteiro(x[12:]))
-    regr = MLPRegressor(random_state=1,
-                        max_iter=5000,
-                        solver='adam',
-                        activation='relu',
+        conversorBinarioInteiro(x[12:18]))
+    regr = MLPRegressor(random_state=1, learning_rate_init=learning_rate_init,
+                        max_iter=10000, momentum=momentum,
+                        solver='sgd', activation='logistic',
                         hidden_layer_sizes=hidden_layer_sizes).fit(x_treino, y_treino)
     score = regr.score(x_teste, y_teste)
+    print(x)
+    print(learning_rate_init, momentum, hidden_layer_sizes)
     if score and score > 0:
         return -score
     else:
         return 0
 
-algorithm_param = {'max_num_iteration': 200,
-                   'population_size': 10,
+algorithm_param = {'max_num_iteration': 1000,
+                   'population_size': 100,
                    'mutation_probability': 0.05,
                    'elit_ratio': 0.01,
                    'crossover_probability': 0.9,
@@ -60,9 +63,9 @@ algorithm_param = {'max_num_iteration': 200,
                    'crossover_type': 'two_point',
                    'max_iteration_without_improv': None}
 
-pop_i = np.array([[0, 1]]*18)
+pop_i = np.array([[0, 1]]*68)
 
-model = ga(function=aptidao, dimension=18, function_timeout=600,
+model = ga(function=aptidao, dimension=68, function_timeout=600,
            variable_type='int', variable_boundaries=pop_i, algorithm_parameters=algorithm_param)
 model.run()
 

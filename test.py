@@ -18,8 +18,9 @@ resistencia = np.asarray(dados.iloc[:, 5])
 
 x = np.c_[velocidade, temperatura, preenchimento, espessura, orientacao]
 y = resistencia
-x_treino, x_teste, y_treino, y_teste = train_test_split(x, y)
+x_treino, x_teste, y_treino, y_teste = train_test_split(x, y, train_size=0.9, test_size=0.1, random_state=1)
 
+print(x_treino, x_teste, y_treino, y_teste)
 
 def conversorBinarioReal(binario):
     v = 0
@@ -32,10 +33,8 @@ def conversorBinarioReal(binario):
 
 
 def aptidao():
-    regr = MLPRegressor(random_state=100,
-                        max_iter=1000,
-                        solver="adam", 
-                        activation="logistic").fit(x_treino, y_treino)
+    regr = MLPRegressor(random_state=1, max_iter=10000,
+                        solver='sgd', activation='logistic').fit(x_treino, y_treino)
     score = regr.score(x_teste, y_teste)
     pred = regr.predict(x_teste)
     mse = mean_squared_error(y_teste, pred)
