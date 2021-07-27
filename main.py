@@ -39,13 +39,13 @@ def aptidao(x):
     learning_rate_init = conversorBinarioReal(x[0:25])
     momentum = conversorBinarioReal(x[25:50])
     hidden_layer_sizes = (
-        conversorBinarioInteiro(x[50:57]), 
-        conversorBinarioInteiro(x[57:64]), 
-        conversorBinarioInteiro(x[64:71]),
-        conversorBinarioInteiro(x[71:78]),
-        conversorBinarioInteiro(x[78:85]))
+        conversorBinarioInteiro(x[50:57]))
+        # conversorBinarioInteiro(x[57:64]), 
+        # conversorBinarioInteiro(x[64:71]),
+        # conversorBinarioInteiro(x[71:78]),
+        # conversorBinarioInteiro(x[78:85]))
     regr = MLPRegressor(random_state=1,
-                        max_iter=1000,
+                        max_iter=5000,
                         learning_rate_init=learning_rate_init,
                         solver='sgd',
                         activation='logistic',
@@ -55,13 +55,13 @@ def aptidao(x):
     mse = mean_squared_error(y_teste, pred)
     return mse
 
-algorithm_param = {'max_num_iteration': 500,
-                   'population_size': 50,
+algorithm_param = {'max_num_iteration': 1000,
+                   'population_size': 100,
                    'mutation_probability': 0.05,
                    'elit_ratio': 0.01,
                    'crossover_probability': 0.9,
                    'parents_portion': 0.3,
-                   'crossover_type': 'uniform',
+                   'crossover_type': 'two_point',
                    'max_iteration_without_improv': None}
 
 pop_i = np.array([[0, 1]]*85)
