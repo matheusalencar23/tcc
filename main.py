@@ -36,24 +36,20 @@ def conversorBinarioInteiro(binario):
         return int(1)
 
 def aptidao(x):
-    learning_rate_init = conversorBinarioReal(x[0:25])
-    momentum = conversorBinarioReal(x[25:50])
     hidden_layer_sizes = (
-        conversorBinarioInteiro(x[50:56]),
-        conversorBinarioInteiro(x[56:62]), 
-        conversorBinarioInteiro(x[62:68]))
+        conversorBinarioInteiro(x[:6]),
+        conversorBinarioInteiro(x[6:12]), 
+        conversorBinarioInteiro(x[12:]))
     regr = MLPRegressor(random_state=1,
-                        max_iter=10000,
-                        learning_rate_init=learning_rate_init,
+                        max_iter=2000,
                         solver='sgd',
                         activation='logistic',
-                        hidden_layer_sizes=hidden_layer_sizes,
-                        momentum=momentum).fit(x_treino, y_treino)
+                        hidden_layer_sizes=hidden_layer_sizes).fit(x_treino, y_treino)
     pred = regr.predict(x_teste)
     mse = mean_squared_error(y_teste, pred)
     return mse
 
-algorithm_param = {'max_num_iteration': 1000,
+algorithm_param = {'max_num_iteration': 500,
                    'population_size': 100,
                    'mutation_probability': 0.05,
                    'elit_ratio': 0.01,
@@ -62,9 +58,9 @@ algorithm_param = {'max_num_iteration': 1000,
                    'crossover_type': 'two_point',
                    'max_iteration_without_improv': None}
 
-pop_i = np.array([[0, 1]]*68)
+pop_i = np.array([[0, 1]]*18)
 
-model = ga(function=aptidao, dimension=68, function_timeout=600,
+model = ga(function=aptidao, dimension=18, function_timeout=600,
            variable_type='int', variable_boundaries=pop_i, algorithm_parameters=algorithm_param)
 model.run()
 
