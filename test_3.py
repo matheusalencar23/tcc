@@ -18,16 +18,13 @@ resistencia = np.asarray(dados.iloc[:, 5])
 
 x = np.c_[velocidade, temperatura, preenchimento, espessura, orientacao]
 y = resistencia
-x_treino, x_teste, y_treino, y_teste = train_test_split(
-    x, y, train_size=0.9, test_size=0.1, random_state=1)
-
+x_treino, x_teste, y_treino, y_teste = train_test_split(x, y, train_size=0.9, test_size=0.1, random_state=1)
 
 def conversorBinarioReal(binario):
     v = 0
     for i in range(len(binario)):
         v += binario[i] * (2 ** (- i - 1))
     return v + 0.000000001
-
 
 def conversorBinarioInteiro(binario):
     v = 0
@@ -38,34 +35,35 @@ def conversorBinarioInteiro(binario):
     else:
         return int(1)
 
-
 def aptidao(x):
     learning_rate_init = conversorBinarioReal(x[18:43])
     momentum = conversorBinarioReal(x[43:])
     hidden_layer_sizes = (
         conversorBinarioInteiro(x[:6]),
-        conversorBinarioInteiro(x[6:12]),
+        conversorBinarioInteiro(x[6:12]), 
         conversorBinarioInteiro(x[12:18]))
     regr = MLPRegressor(random_state=1, learning_rate_init=learning_rate_init,
                         max_iter=10000, momentum=momentum,
-                        solver='sgd', activation='logistic',
+                        solver='adam', activation='relu',
                         hidden_layer_sizes=hidden_layer_sizes).fit(x_treino, y_treino)
     score = regr.score(x_teste, y_teste)
-    pred = regr.predict(x_teste)
-    mse = mean_squared_error(y_teste, pred)
-    print(learning_rate_init, momentum, hidden_layer_sizes)
-    print(score, mse)
-    print(y_teste, pred)
-    return pred
+    if score and score > 0:
+        return -score
+    else:
+        return 0
 
+algorithm_param = {'max_num_iteration': 500,
+                   'population_size': 10,
+                   'mutation_probability': 0.05,
+                   'elit_ratio': 0.01,
+                   'crossover_probability': 0.9,
+                   'parents_portion': 0.3,
+                   'crossover_type': 'two_point',
+                   'max_iteration_without_improv': None}
 
-ind = np.array([1, 1, 1, 0, 0, 1,
-                1, 1, 1, 1, 0, 1,
-                0, 1, 0, 0, 0, 0,
-                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 1, 1, 0,
-                0, 0, 0, 0, 0, 1, 1, 0, 1, 0, 0, 1, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 0, 0])
-pred = aptidao(ind)
-x_linha = np.linspace(0, 60, 1000)
-plt.plot(y_teste, pred, 'bo')
-plt.plot(x_linha, x_linha, 'r')
-plt.show()
+pop_i = np.array([[0, 1]]*68)
+
+model = ga(function=aptidao, dimension=68, function_timeout=600,
+           variable_type='int', variable_boundaries=pop_i, algorithm_parameters=algorithm_param)
+model.run()
+
