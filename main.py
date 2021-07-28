@@ -24,7 +24,10 @@ def conversorBinarioReal(binario):
     v = 0
     for i in range(len(binario)):
         v += binario[i] * (2 ** (- i - 1))
-    return v + 0.000000001
+    if v > 0:
+        return v
+    else:
+        return v + 0.0000000001
 
 def conversorBinarioInteiro(binario):
     v = 0
@@ -36,15 +39,16 @@ def conversorBinarioInteiro(binario):
         return int(1)
 
 def aptidao(x):
-    learning_rate_init = conversorBinarioReal(x[18:43])
-    momentum = conversorBinarioReal(x[43:])
+    learning_rate_init = conversorBinarioReal(x[:25])
+    beta_1 = conversorBinarioReal(x[25:50])
+    beta_2 = conversorBinarioReal(x[50:75])
     hidden_layer_sizes = (
-        conversorBinarioInteiro(x[:6]),
-        conversorBinarioInteiro(x[6:12]), 
-        conversorBinarioInteiro(x[12:18]))
+        conversorBinarioInteiro(x[75:81]),
+        conversorBinarioInteiro(x[81:87]), 
+        conversorBinarioInteiro(x[87:]))
     regr = MLPRegressor(random_state=1, learning_rate_init=learning_rate_init,
-                        max_iter=10000, momentum=momentum,
-                        solver='sgd', activation='logistic',
+                        max_iter=1000, beta_1=beta_1, beta_2=beta_2,
+                        solver='adam', activation='relu',
                         hidden_layer_sizes=hidden_layer_sizes).fit(x_treino, y_treino)
     score = regr.score(x_teste, y_teste)
     if score and score > 0:
@@ -61,9 +65,9 @@ algorithm_param = {'max_num_iteration': 500,
                    'crossover_type': 'two_point',
                    'max_iteration_without_improv': None}
 
-pop_i = np.array([[0, 1]]*68)
+pop_i = np.array([[0, 1]]*93)
 
-model = ga(function=aptidao, dimension=68, function_timeout=600,
+model = ga(function=aptidao, dimension=93, function_timeout=600,
            variable_type='int', variable_boundaries=pop_i, algorithm_parameters=algorithm_param)
 model.run()
 
