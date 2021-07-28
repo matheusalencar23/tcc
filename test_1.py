@@ -16,7 +16,7 @@ espessura = np.asarray(dados.iloc[:, 3])
 orientacao = np.asarray(dados.iloc[:, 4])
 resistencia = np.asarray(dados.iloc[:, 5])
 
-x = np.c_[velocidade, temperatura, preenchimento, espessura, orientacao]
+x = np.c_[velocidade, temperatura, preenchimento, espessura, orientacao, np.ones((len(velocidade)))]
 y = resistencia
 x_treino, x_teste, y_treino, y_teste = train_test_split(x, y, train_size=0.9, test_size=0.1, random_state=1)
 
@@ -36,7 +36,7 @@ def aptidao():
     score = regr.score(x_teste, y_teste)
     pred = regr.predict(x_teste)
     mse = mean_squared_error(y_teste, pred)
-    print(score, mse)
+    print(pred, y_teste)
     return pred
 
 pred = aptidao()
