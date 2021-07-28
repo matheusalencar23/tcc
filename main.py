@@ -16,7 +16,7 @@ espessura = np.asarray(dados.iloc[:, 3])
 orientacao = np.asarray(dados.iloc[:, 4])
 resistencia = np.asarray(dados.iloc[:, 5])
 
-x = np.c_[velocidade, temperatura, preenchimento, espessura, orientacao, np.ones((len(velocidade)))]
+x = np.c_[velocidade, temperatura, preenchimento, espessura, orientacao]
 y = resistencia
 x_treino, x_teste, y_treino, y_teste = train_test_split(x, y, train_size=0.9, test_size=0.1, random_state=1)
 
@@ -43,7 +43,7 @@ def aptidao(x):
         conversorBinarioInteiro(x[6:12]), 
         conversorBinarioInteiro(x[12:18]))
     regr = MLPRegressor(random_state=1, learning_rate_init=learning_rate_init,
-                        max_iter=500, momentum=momentum,
+                        max_iter=10000, momentum=momentum,
                         solver='sgd', activation='logistic',
                         hidden_layer_sizes=hidden_layer_sizes).fit(x_treino, y_treino)
     score = regr.score(x_teste, y_teste)
@@ -52,8 +52,8 @@ def aptidao(x):
     else:
         return 0
 
-algorithm_param = {'max_num_iteration': 1000,
-                   'population_size': 100,
+algorithm_param = {'max_num_iteration': 500,
+                   'population_size': 10,
                    'mutation_probability': 0.05,
                    'elit_ratio': 0.01,
                    'crossover_probability': 0.9,
