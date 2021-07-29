@@ -5,8 +5,7 @@ import matplotlib.pyplot as plt
 from sklearn.neural_network import MLPRegressor
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_squared_error
-from geneticalgorithm import geneticalgorithm as ga
-import random as rd
+import pygad
 
 dados = pd.read_csv('./data.csv')
 velocidade = np.asarray(dados.iloc[:, 0])
@@ -42,7 +41,7 @@ def conversorBinarioInteiro(binario):
         return int(1)
 
 
-def aptidao(x):
+def aptidao(x, i):
     learning_rate_init = conversorBinarioReal(x[:25])
     beta_1 = conversorBinarioReal(x[25:50])
     beta_2 = conversorBinarioReal(x[50:75])
@@ -52,29 +51,26 @@ def aptidao(x):
         conversorBinarioInteiro(x[106:112]),
         conversorBinarioInteiro(x[112:]))
     regr = MLPRegressor(random_state=1, learning_rate_init=learning_rate_init,
-                        max_iter=500, beta_1=beta_1, beta_2=beta_2, epsilon=epsilon,
+                        max_iter=50, beta_1=beta_1, beta_2=beta_2, epsilon=epsilon,
                         solver='adam', activation='relu', learning_rate='constant',
                         hidden_layer_sizes=hidden_layer_sizes).fit(x_treino, y_treino)
-    pred = regr.predict(x_teste)
     score = regr.score(x_teste, y_teste)
-    mse = mean_squared_error(y_teste, pred)
-    print('learning_rate_init ', learning_rate_init)
-    print('beta_1 ', beta_1)
-    print('beta_2 ', beta_2)
-    print('epsilon ', epsilon)
-    print('hidden_layer_sizes ', hidden_layer_sizes)
-    print('score ', score)
-    print('mse ', mse)
-    return pred
+    return score
+    # if score and score > 0:
+    #     else:
+    #     return 0
 
 
-ind = [0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1,
-       1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 1, 0, 0, 0, 1, 0, 1, 1, 1, 1, 0, 1, 1, 1, 1, 0, 0,
-       1, 1, 0, 0, 1, 1, 1, 1, 0, 1, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 1, 0,
-       1, 1, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 1, 1, 1, 0, 1, 1,
-       1, 1, 1, 0, 1, 1, 0, 0, 0]
-pred = aptidao(ind)
-plt.plot(y_teste, pred, 'ro')
-x = np.linspace(0, 60, 100)
-plt.plot(x, x, 'b')
-plt.show()
+model = pygad.GA(num_generations=100, num_parents_mating=10,
+                 fitness_func=aptidao, sol_per_pop=10,
+                 num_genes=118, gene_type=int,
+                 init_range_low=0, init_range_high=2,
+                 parent_selection_type="tournament",
+                 keep_parents=0, crossover_type="two_points",
+                 crossover_probability=0.8, mutation_type="random",
+                 mutation_probability=0.01)
+model.run()
+model.plot_fitness()
+solution, solution_fitness, solution_idx = model.best_solution()
+print("Parameters of the best solution : {solution}".format(solution=solution))
+print("Fitness value of the best solution = {solution_fitness}".format(solution_fitness=solution_fitness))
