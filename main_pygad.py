@@ -61,26 +61,14 @@ def aptidao(x, i):
 def on_start(model):
     print('Algoritmo Genético Iniciado')
     print('Tamanho da população {}'.format(model.pop_size))
-    print('População')
-    for ind in model.population:
-        print(ind)
-    print(model.generations_completed + 1)
-
-def on_fitness(model, aptidoes):
-    print('Aptidões')
-    for ap in aptidoes:
-        print("{}".format(ap))
 
 def on_generation(model):
-    print("Geração {}".format(model.generations_completed + 1))
+    print("Geração {}".format(model.generations_completed), end="\r")
 
 def on_stop(model, aptidoesFinais):
     print('Algoritmo Genético Finalizado')
-    for ap in aptidoesFinais:
-        print("Aptidões {}".format(ap))
 
-
-model = pygad.GA(num_generations=5000, num_parents_mating=10,
+model = pygad.GA(num_generations=200, num_parents_mating=10,
                  fitness_func=aptidao, sol_per_pop=10,
                  num_genes=118, gene_type=int,
                  init_range_low=0, init_range_high=2,
@@ -88,9 +76,9 @@ model = pygad.GA(num_generations=5000, num_parents_mating=10,
                  keep_parents=0, crossover_type="two_points",
                  crossover_probability=0.8, mutation_type="random", suppress_warnings=False,
                  mutation_probability=0.01, on_start=on_start, on_stop=on_stop,
-                 on_generation=on_generation, on_fitness=on_fitness)
+                 on_generation=on_generation)
 model.run()
-model.plot_fitness()
 solution, solution_fitness, solution_idx = model.best_solution()
 print("Melhor indivíduo : {}".format(solution))
 print("Aptidão do melhor indivíduo = {}".format(solution_fitness))
+model.plot_fitness()
