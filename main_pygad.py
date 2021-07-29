@@ -56,10 +56,17 @@ def aptidao(x, i):
                         hidden_layer_sizes=hidden_layer_sizes).fit(x_treino, y_treino)
     score = regr.score(x_teste, y_teste)
     return score
-    # if score and score > 0:
-    #     else:
-    #     return 0
+    
+def on_start(model):
+    print('Algoritmo Genético Iniciado')
+    print('Tamanho da população {}'.format(model.pop_size))
 
+def on_fitness(model, aptidoes):
+    for ap in aptidoes:
+        print("Aptidão {}".format(ap), end="'\r")
+
+def on_generation(model):
+    print("Geração {}".format(model.generations_completed))
 
 model = pygad.GA(num_generations=5000, num_parents_mating=10,
                  fitness_func=aptidao, sol_per_pop=10,
@@ -67,8 +74,9 @@ model = pygad.GA(num_generations=5000, num_parents_mating=10,
                  init_range_low=0, init_range_high=2,
                  parent_selection_type="tournament",
                  keep_parents=0, crossover_type="two_points",
-                 crossover_probability=0.8, mutation_type="random",
-                 mutation_probability=0.01)
+                 crossover_probability=0.8, mutation_type="random", suppress_warnings=False,
+                 mutation_probability=0.01, on_start=on_start, 
+                 on_fitness=on_fitness, on_generation=on_generation)
 model.run()
 model.plot_fitness()
 solution, solution_fitness, solution_idx = model.best_solution()
