@@ -60,6 +60,7 @@ def aptidao(x, i):
     return score
 
 NUM_GERACOES = 500
+TAM_POP = 100
 
 def on_start(model):
     print('Algoritmo Genético Iniciado')
@@ -81,7 +82,7 @@ def on_stop(model, aptidoesFinais):
 
 
 model = pygad.GA(num_generations=NUM_GERACOES, num_parents_mating=10,
-                 fitness_func=aptidao, sol_per_pop=10,
+                 fitness_func=aptidao, sol_per_pop=TAM_POP,
                  num_genes=118, gene_type=int,
                  init_range_low=0, init_range_high=2,
                  parent_selection_type="tournament",
