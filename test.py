@@ -18,7 +18,9 @@ resistencia = np.asarray(dados.iloc[:, 5])
 
 x = np.c_[velocidade, temperatura, preenchimento, espessura, orientacao]
 y = resistencia
-x_treino, x_teste, y_treino, y_teste = train_test_split(x, y, train_size=0.9, test_size=0.1, random_state=1)
+x_treino, x_teste, y_treino, y_teste = train_test_split(
+    x, y, train_size=0.9, test_size=0.1, random_state=1)
+
 
 def conversorBinarioReal(binario):
     v = 0
@@ -29,6 +31,7 @@ def conversorBinarioReal(binario):
     else:
         return v + 0.0000000001
 
+
 def conversorBinarioInteiro(binario):
     v = 0
     for i in range(len(binario)):
@@ -38,6 +41,7 @@ def conversorBinarioInteiro(binario):
     else:
         return int(1)
 
+
 def aptidao(x):
     learning_rate_init = conversorBinarioReal(x[:25])
     beta_1 = conversorBinarioReal(x[25:50])
@@ -45,7 +49,7 @@ def aptidao(x):
     epsilon = conversorBinarioReal(x[75:100])
     hidden_layer_sizes = (
         conversorBinarioInteiro(x[100:106]),
-        conversorBinarioInteiro(x[106:112]), 
+        conversorBinarioInteiro(x[106:112]),
         conversorBinarioInteiro(x[112:]))
     regr = MLPRegressor(random_state=1, learning_rate_init=learning_rate_init,
                         max_iter=500, beta_1=beta_1, beta_2=beta_2, epsilon=epsilon,
@@ -63,11 +67,12 @@ def aptidao(x):
     print('mse ', mse)
     return pred
 
-ind = [0, 0, 0, 0, 1, 1, 1, 0, 1, 1, 0, 1, 0, 1, 0, 0, 0, 0, 1, 0, 1, 1, 0, 0, 0, 1, 0,
-       1, 0, 0, 1, 1, 1, 0, 0, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1,
-       1, 1, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 0, 1, 0,
-       0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0, 0, 1, 1, 0, 0, 1, 1, 1, 0, 0, 0, 1, 0, 1, 0,
-       0, 1, 0, 1, 1, 0, 0, 0, 1, 0, ]
+
+ind = [0, 0, 1, 0, 1, 1, 1, 0, 1, 1, 0, 0, 0, 1, 1, 1, 1, 0, 1, 1, 0, 1, 1, 0,
+       0, 0, 1, 1, 0, 1, 0, 1, 0, 0, 1, 0, 1, 0, 0, 0, 1, 1, 1, 0, 1, 0, 1, 0,
+       0, 1, 1, 0, 1, 1, 0, 1, 0, 1, 1, 1, 0, 0, 0, 1, 1, 0, 0, 1, 0, 1, 0, 0,
+       0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 1, 0, 0, 1, 1, 1, 1,
+       1, 1, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 0]
 pred = aptidao(ind)
 plt.plot(y_teste, pred, 'ro')
 x = np.linspace(0, 60, 100)
