@@ -51,24 +51,25 @@ def aptidao(x):
                         max_iter=500, beta_1=beta_1, beta_2=beta_2, epsilon=epsilon,
                         solver='adam', activation='relu', learning_rate='constant',
                         hidden_layer_sizes=hidden_layer_sizes).fit(x_treino, y_treino)
+    pred = regr.predict(x_teste)
     score = regr.score(x_teste, y_teste)
-    if score and score > 0:
-        return -score
-    else:
-        return 0
+    mse = mean_squared_error(y_teste, pred)
+    print('learning_rate_init ', learning_rate_init)
+    print('beta_1 ', beta_1)
+    print('beta_2 ', beta_2)
+    print('epsilon ', epsilon)
+    print('hidden_layer_sizes ', hidden_layer_sizes)
+    print('score ', score)
+    print('mse ', mse)
+    return pred
 
-algorithm_param = {'max_num_iteration': 5000,
-                   'population_size': 10,
-                   'mutation_probability': 0.05,
-                   'elit_ratio': 0.01,
-                   'crossover_probability': 0.9,
-                   'parents_portion': 0.3,
-                   'crossover_type': 'two_point',
-                   'max_iteration_without_improv': None}
-
-pop_i = np.array([[0, 1]]*118)
-
-model = ga(function=aptidao, dimension=118, function_timeout=600,
-           variable_type='int', variable_boundaries=pop_i, algorithm_parameters=algorithm_param)
-model.run()
-
+ind = [0, 0, 0, 0, 1, 1, 1, 0, 1, 1, 0, 1, 0, 1, 0, 0, 0, 0, 1, 0, 1, 1, 0, 0, 0, 1, 0,
+       1, 0, 0, 1, 1, 1, 0, 0, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1,
+       1, 1, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 0, 1, 0,
+       0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0, 0, 1, 1, 0, 0, 1, 1, 1, 0, 0, 0, 1, 0, 1, 0,
+       0, 1, 0, 1, 1, 0, 0, 0, 1, 0, ]
+pred = aptidao(ind)
+plt.plot(y_teste, pred, 'ro')
+x = np.linspace(0, 60, 100)
+plt.plot(x, x, 'b')
+plt.show()
