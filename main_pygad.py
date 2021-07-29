@@ -63,7 +63,7 @@ def on_start(model):
 
 def on_fitness(model, aptidoes):
     for ap in aptidoes:
-        print("Aptidão {}".format(ap), end="'\r")
+        print("Aptidão {}".format(ap))
 
 def on_generation(model):
     print("Geração {}".format(model.generations_completed))
@@ -80,5 +80,5 @@ model = pygad.GA(num_generations=5000, num_parents_mating=10,
 model.run()
 model.plot_fitness()
 solution, solution_fitness, solution_idx = model.best_solution()
-print("Parameters of the best solution : {solution}".format(solution=solution))
-print("Fitness value of the best solution = {solution_fitness}".format(solution_fitness=solution_fitness))
+print("Melhor indivíduo : {}".format(solution))
+print("Aptidão do melhor indivíduo = {}".format(solution_fitness))
