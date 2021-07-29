@@ -40,6 +40,8 @@ def conversorBinarioInteiro(binario):
     else:
         return int(1)
 
+MAX_ITER_RN = 500
+
 
 def aptidao(x, i):
     learning_rate_init = conversorBinarioReal(x[:25])
@@ -51,12 +53,13 @@ def aptidao(x, i):
         conversorBinarioInteiro(x[106:112]),
         conversorBinarioInteiro(x[112:]))
     regr = MLPRegressor(random_state=1, learning_rate_init=learning_rate_init,
-                        max_iter=500, beta_1=beta_1, beta_2=beta_2, epsilon=epsilon,
+                        max_iter=MAX_ITER_RN, beta_1=beta_1, beta_2=beta_2, epsilon=epsilon,
                         solver='adam', activation='relu', learning_rate='constant',
                         hidden_layer_sizes=hidden_layer_sizes).fit(x_treino, y_treino)
     score = regr.score(x_teste, y_teste)
     return score
 
+NUM_GERACOES = 500
 
 def on_start(model):
     print('Algoritmo Genético Iniciado')
@@ -64,18 +67,20 @@ def on_start(model):
 
 
 def on_fitness(model, aptidoes):
+    print('Aptidões')
     print(aptidoes)
+    print('\n')
 
 
 def on_generation(model):
-    print("Geração {}".format(model.generations_completed), end="\r")
+    print("Geração {}/{}".format(model.generations_completed, NUM_GERACOES))
 
 
 def on_stop(model, aptidoesFinais):
     print('Algoritmo Genético Finalizado')
 
 
-model = pygad.GA(num_generations=500, num_parents_mating=10,
+model = pygad.GA(num_generations=NUM_GERACOES, num_parents_mating=10,
                  fitness_func=aptidao, sol_per_pop=10,
                  num_genes=118, gene_type=int,
                  init_range_low=0, init_range_high=2,
