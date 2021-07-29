@@ -51,7 +51,7 @@ def aptidao(x, i):
         conversorBinarioInteiro(x[106:112]),
         conversorBinarioInteiro(x[112:]))
     regr = MLPRegressor(random_state=1, learning_rate_init=learning_rate_init,
-                        max_iter=50, beta_1=beta_1, beta_2=beta_2, epsilon=epsilon,
+                        max_iter=500, beta_1=beta_1, beta_2=beta_2, epsilon=epsilon,
                         solver='adam', activation='relu', learning_rate='constant',
                         hidden_layer_sizes=hidden_layer_sizes).fit(x_treino, y_treino)
     score = regr.score(x_teste, y_teste)
@@ -61,7 +61,7 @@ def aptidao(x, i):
     #     return 0
 
 
-model = pygad.GA(num_generations=100, num_parents_mating=10,
+model = pygad.GA(num_generations=5000, num_parents_mating=10,
                  fitness_func=aptidao, sol_per_pop=10,
                  num_genes=118, gene_type=int,
                  init_range_low=0, init_range_high=2,
