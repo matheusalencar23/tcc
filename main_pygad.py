@@ -40,7 +40,7 @@ def conversorBinarioInteiro(binario):
     else:
         return int(1)
 
-MAX_ITER_RN = 500
+MAX_ITER_RN = 10000
 
 
 def aptidao(x, i):
@@ -59,7 +59,7 @@ def aptidao(x, i):
     score = regr.score(x_teste, y_teste)
     return score
 
-NUM_GERACOES = 500
+NUM_GERACOES = 5000
 TAM_POP = 100
 
 def on_start(model):
