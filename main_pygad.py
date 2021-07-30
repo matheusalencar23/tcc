@@ -41,7 +41,7 @@ def conversorBinarioInteiro(binario):
         return int(1)
 
 
-MAX_ITER_RN = 5000
+MAX_ITER_RN = 10000
 
 
 def aptidao(x, i):
@@ -71,11 +71,15 @@ NUM_GENES = 118
 def on_start(model):
     print('Algoritmo Genético Iniciado')
     print('Tamanho da população {}'.format(model.pop_size))
+    print('\n')
 
 
 def on_fitness(model, aptidoes):
     print('Aptidões')
     print(aptidoes)
+    solution, solution_fitness, solution_idx = model.best_solution()
+    print("Melhor indivíduo: {}".format(solution))
+    print("Aptidão do melhor indivíduo: {}".format(solution_fitness))
     print('\n')
 
 
@@ -98,6 +102,6 @@ model = pygad.GA(num_generations=NUM_GERACOES, num_parents_mating=TAM_POP,
                  on_generation=on_generation, on_fitness=on_fitness)
 model.run()
 solution, solution_fitness, solution_idx = model.best_solution()
-print("Melhor indivíduo : {}".format(solution))
-print("Aptidão do melhor indivíduo = {}".format(solution_fitness))
+print("Melhor indivíduo: {}".format(solution))
+print("Aptidão do melhor indivíduo: {}".format(solution_fitness))
 model.plot_fitness()
