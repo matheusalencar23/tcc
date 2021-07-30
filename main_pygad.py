@@ -58,11 +58,14 @@ def aptidao(x, i):
                         solver='adam', activation='relu', learning_rate='constant',
                         hidden_layer_sizes=hidden_layer_sizes).fit(x_treino, y_treino)
     score = regr.score(x_teste, y_teste)
-    return score
+    if score and score > 0:
+        return score
+    return 0
 
 
 NUM_GERACOES = 1000
 TAM_POP = 100
+NUM_GENES = 118
 
 
 def on_start(model):
@@ -84,14 +87,14 @@ def on_stop(model, aptidoesFinais):
     print('Algoritmo Genético Finalizado')
 
 
-model = pygad.GA(num_generations=NUM_GERACOES, num_parents_mating=10,
+model = pygad.GA(num_generations=NUM_GERACOES, num_parents_mating=TAM_POP,
                  fitness_func=aptidao, sol_per_pop=TAM_POP,
-                 num_genes=118, gene_type=int,
+                 num_genes=NUM_GENES, gene_type=int,
                  init_range_low=0, init_range_high=2,
-                 parent_selection_type="tournament",
-                 keep_parents=0, crossover_type="two_points",
-                 crossover_probability=0.8, mutation_type="random", suppress_warnings=False,
-                 mutation_probability=0.01, on_start=on_start, on_stop=on_stop,
+                 parent_selection_type="tournament", K_tournament=3,
+                 keep_parents=0, crossover_type="single_point",
+                 crossover_probability=0.9, mutation_type="random", suppress_warnings=True,
+                 mutation_probability=0.05, on_start=on_start, on_stop=on_stop,
                  on_generation=on_generation, on_fitness=on_fitness)
 model.run()
 solution, solution_fitness, solution_idx = model.best_solution()
