@@ -40,6 +40,7 @@ def conversorBinarioInteiro(binario):
     else:
         return int(1)
 
+
 MAX_ITER_RN = 10000
 
 
@@ -59,8 +60,10 @@ def aptidao(x, i):
     score = regr.score(x_teste, y_teste)
     return score
 
-NUM_GERACOES = 5000
+
+NUM_GERACOES = 1000
 TAM_POP = 100
+
 
 def on_start(model):
     print('Algoritmo Genético Iniciado')
