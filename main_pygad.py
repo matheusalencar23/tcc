@@ -63,7 +63,7 @@ def aptidao(x, i):
     return 0
 
 
-NUM_GERACOES = 1000
+NUM_GERACOES = 100
 TAM_POP = 100
 NUM_GENES = 118
 
