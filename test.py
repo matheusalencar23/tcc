@@ -52,7 +52,7 @@ def aptidao(x):
         conversorBinarioInteiro(x[106:112]),
         conversorBinarioInteiro(x[112:]))
     regr = MLPRegressor(random_state=1, learning_rate_init=learning_rate_init,
-                        max_iter=500, beta_1=beta_1, beta_2=beta_2, epsilon=epsilon,
+                        max_iter=5000, beta_1=beta_1, beta_2=beta_2, epsilon=epsilon,
                         solver='adam', activation='relu', learning_rate='constant',
                         hidden_layer_sizes=hidden_layer_sizes).fit(x_treino, y_treino)
     pred = regr.predict(x_teste)
@@ -69,7 +69,7 @@ def aptidao(x):
 
 
 
-indStr = '0000000001101010000000000100001100000100000000000010000000000000000000000010000000000110000000000000010001001100000010'
+indStr = '0000000010000000000000000101011000000001000000000010000000000000000000010000000000000000000000000001001011001011001010'
 ind = []
 for i in indStr:
     ind.append(int(i))
