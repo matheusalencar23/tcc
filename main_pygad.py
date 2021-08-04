@@ -85,6 +85,8 @@ def on_fitness(model, aptidoes):
 
 def on_generation(model):
     print("Geração {}/{}".format(model.generations_completed, NUM_GERACOES))
+    for i in range(len(model.population)):
+        print("Indivíduo {}: {}".format(i + 1, model.population[i]))
 
 
 def on_stop(model, aptidoesFinais):
