@@ -5,8 +5,7 @@ import matplotlib.pyplot as plt
 from sklearn.neural_network import MLPRegressor
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_squared_error
-from geneticalgorithm import geneticalgorithm as ga
-import random as rd
+import pygad
 
 dados = pd.read_csv('./data.csv')
 velocidade = np.asarray(dados.iloc[:, 0])
@@ -18,7 +17,9 @@ resistencia = np.asarray(dados.iloc[:, 5])
 
 x = np.c_[velocidade, temperatura, preenchimento, espessura, orientacao]
 y = resistencia
-x_treino, x_teste, y_treino, y_teste = train_test_split(x, y, train_size=0.9, test_size=0.1, random_state=1)
+x_treino, x_teste, y_treino, y_teste = train_test_split(
+    x, y, train_size=0.9, test_size=0.1, random_state=1)
+
 
 def conversorBinarioReal(binario):
     v = 0
@@ -29,6 +30,7 @@ def conversorBinarioReal(binario):
     else:
         return v + 0.0000000001
 
+
 def conversorBinarioInteiro(binario):
     v = 0
     for i in range(len(binario)):
@@ -38,37 +40,106 @@ def conversorBinarioInteiro(binario):
     else:
         return int(1)
 
-def aptidao(x):
+
+MAX_ITER_RN = 1000
+
+
+def aptidao(x, i):
     learning_rate_init = conversorBinarioReal(x[:25])
     beta_1 = conversorBinarioReal(x[25:50])
     beta_2 = conversorBinarioReal(x[50:75])
     epsilon = conversorBinarioReal(x[75:100])
     hidden_layer_sizes = (
         conversorBinarioInteiro(x[100:106]),
-        conversorBinarioInteiro(x[106:112]), 
+        conversorBinarioInteiro(x[106:112]),
         conversorBinarioInteiro(x[112:]))
     regr = MLPRegressor(random_state=1, learning_rate_init=learning_rate_init,
-                        max_iter=500, beta_1=beta_1, beta_2=beta_2, epsilon=epsilon,
+                        max_iter=MAX_ITER_RN, beta_1=beta_1, beta_2=beta_2, epsilon=epsilon,
                         solver='adam', activation='relu', learning_rate='constant',
                         hidden_layer_sizes=hidden_layer_sizes).fit(x_treino, y_treino)
     score = regr.score(x_teste, y_teste)
     if score and score > 0:
-        return -score
-    else:
-        return 0
+        return score
+    return 0
 
-algorithm_param = {'max_num_iteration': 5000,
-                   'population_size': 10,
-                   'mutation_probability': 0.05,
-                   'elit_ratio': 0.01,
-                   'crossover_probability': 0.9,
-                   'parents_portion': 0.3,
-                   'crossover_type': 'two_point',
-                   'max_iteration_without_improv': None}
 
-pop_i = np.array([[0, 1]]*118)
+def predicao(x):
+    learning_rate_init = conversorBinarioReal(x[:25])
+    beta_1 = conversorBinarioReal(x[25:50])
+    beta_2 = conversorBinarioReal(x[50:75])
+    epsilon = conversorBinarioReal(x[75:100])
+    hidden_layer_sizes = (
+        conversorBinarioInteiro(x[100:106]),
+        conversorBinarioInteiro(x[106:112]),
+        conversorBinarioInteiro(x[112:]))
+    regr = MLPRegressor(random_state=1, learning_rate_init=learning_rate_init,
+                        max_iter=5000, beta_1=beta_1, beta_2=beta_2, epsilon=epsilon,
+                        solver='adam', activation='relu', learning_rate='constant',
+                        hidden_layer_sizes=hidden_layer_sizes).fit(x_treino, y_treino)
+    pred = regr.predict(x_teste)
+    return pred
 
-model = ga(function=aptidao, dimension=118, function_timeout=600,
-           variable_type='int', variable_boundaries=pop_i, algorithm_parameters=algorithm_param)
+
+NUM_GERACOES = 200
+TAM_POP = 100
+NUM_GENES = 118
+
+
+def on_start(model):
+    print('Algoritmo Genético Iniciado')
+    print('Tamanho da população {}'.format(model.pop_size))
+    print('\n')
+
+
+def on_fitness(model, aptidoes):
+    print('Aptidões')
+    print(aptidoes)
+    solution, solution_fitness, solution_idx = model.best_solution()
+    print("Melhor indivíduo: {}".format(solution))
+    print("Aptidão do melhor indivíduo: {}".format(solution_fitness))
+    learning_rate_init = conversorBinarioReal(solution[:25])
+    beta_1 = conversorBinarioReal(solution[25:50])
+    beta_2 = conversorBinarioReal(solution[50:75])
+    epsilon = conversorBinarioReal(solution[75:100])
+    hidden_layer_sizes = (
+        conversorBinarioInteiro(solution[100:106]),
+        conversorBinarioInteiro(solution[106:112]),
+        conversorBinarioInteiro(solution[112:]))
+    print('learning_rate_init ', learning_rate_init)
+    print('beta_1 ', beta_1)
+    print('beta_2 ', beta_2)
+    print('epsilon ', epsilon)
+    print('hidden_layer_sizes ', hidden_layer_sizes)
+    print('\n')
+
+
+def on_generation(model):
+    print("Geração {}/{}".format(model.generations_completed, NUM_GERACOES))
+
+
+def on_stop(model, aptidoesFinais):
+    print('Algoritmo Genético Finalizado')
+
+
+model = pygad.GA(num_generations=NUM_GERACOES, num_parents_mating=TAM_POP,
+                 fitness_func=aptidao, sol_per_pop=TAM_POP,
+                 num_genes=NUM_GENES, gene_type=int,
+                 init_range_low=0, init_range_high=2,
+                 parent_selection_type="tournament", K_tournament=3,
+                 keep_parents=0, crossover_type="single_point",
+                 crossover_probability=0.9, mutation_type="random", suppress_warnings=True,
+                 mutation_probability=0.05, on_start=on_start, on_stop=on_stop,
+                 on_generation=on_generation, on_fitness=on_fitness)
 model.run()
-
+solution, solution_fitness, solution_idx = model.best_solution()
+print("Melhor indivíduo: {}".format(solution))
+print("Aptidão do melhor indivíduo: {}".format(solution_fitness))
+model.plot_fitness(title='Aptidão x Geração', ylabel='Aptidão', xlabel='Geração')
+pred = predicao(solution)
+plt.plot(y_teste, pred, 'ro')
+x = np.linspace(0, 60, 100)
+plt.plot(x, x, 'b', )
+plt.xlabel('Valores reais')
+plt.ylabel('Valores calculados')
+plt.title('Real x Predição')
+plt.show()
