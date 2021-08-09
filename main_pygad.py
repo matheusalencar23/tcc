@@ -63,6 +63,23 @@ def aptidao(x, i):
     return 0
 
 
+def predicao(x):
+    learning_rate_init = conversorBinarioReal(x[:25])
+    beta_1 = conversorBinarioReal(x[25:50])
+    beta_2 = conversorBinarioReal(x[50:75])
+    epsilon = conversorBinarioReal(x[75:100])
+    hidden_layer_sizes = (
+        conversorBinarioInteiro(x[100:106]),
+        conversorBinarioInteiro(x[106:112]),
+        conversorBinarioInteiro(x[112:]))
+    regr = MLPRegressor(random_state=1, learning_rate_init=learning_rate_init,
+                        max_iter=5000, beta_1=beta_1, beta_2=beta_2, epsilon=epsilon,
+                        solver='adam', activation='relu', learning_rate='constant',
+                        hidden_layer_sizes=hidden_layer_sizes).fit(x_treino, y_treino)
+    pred = regr.predict(x_teste)
+    return pred
+
+
 NUM_GERACOES = 200
 TAM_POP = 100
 NUM_GENES = 118
@@ -117,4 +134,12 @@ model.run()
 solution, solution_fitness, solution_idx = model.best_solution()
 print("Melhor indivíduo: {}".format(solution))
 print("Aptidão do melhor indivíduo: {}".format(solution_fitness))
-model.plot_fitness()
+model.plot_fitness(title='Aptidão x Geração', ylabel='Aptidão', xlabel='Geração')
+pred = predicao(solution)
+plt.plot(y_teste, pred, 'ro')
+x = np.linspace(0, 60, 100)
+plt.plot(x, x, 'b', )
+plt.xlabel('Valores reais')
+plt.ylabel('Valores calculados')
+plt.title('Real x Predição')
+plt.show()
