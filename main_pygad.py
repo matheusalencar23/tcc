@@ -41,7 +41,7 @@ def conversorBinarioInteiro(binario):
         return int(1)
 
 
-MAX_ITER_RN = 10000
+MAX_ITER_RN = 1000
 
 
 def aptidao(x, i):
@@ -63,7 +63,7 @@ def aptidao(x, i):
     return 0
 
 
-NUM_GERACOES = 100
+NUM_GERACOES = 200
 TAM_POP = 100
 NUM_GENES = 118
 
