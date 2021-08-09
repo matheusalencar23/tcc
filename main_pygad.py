@@ -80,6 +80,19 @@ def on_fitness(model, aptidoes):
     solution, solution_fitness, solution_idx = model.best_solution()
     print("Melhor indivíduo: {}".format(solution))
     print("Aptidão do melhor indivíduo: {}".format(solution_fitness))
+    learning_rate_init = conversorBinarioReal(solution[:25])
+    beta_1 = conversorBinarioReal(solution[25:50])
+    beta_2 = conversorBinarioReal(solution[50:75])
+    epsilon = conversorBinarioReal(solution[75:100])
+    hidden_layer_sizes = (
+        conversorBinarioInteiro(solution[100:106]),
+        conversorBinarioInteiro(solution[106:112]),
+        conversorBinarioInteiro(solution[112:]))
+    print('learning_rate_init ', learning_rate_init)
+    print('beta_1 ', beta_1)
+    print('beta_2 ', beta_2)
+    print('epsilon ', epsilon)
+    print('hidden_layer_sizes ', hidden_layer_sizes)
     print('\n')
 
 
