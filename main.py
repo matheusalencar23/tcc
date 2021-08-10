@@ -73,10 +73,19 @@ def predicao(x):
         conversorBinarioInteiro(x[106:112]),
         conversorBinarioInteiro(x[112:]))
     regr = MLPRegressor(random_state=1, learning_rate_init=learning_rate_init,
-                        max_iter=5000, beta_1=beta_1, beta_2=beta_2, epsilon=epsilon,
+                        max_iter=MAX_ITER_RN*10, beta_1=beta_1, beta_2=beta_2, epsilon=epsilon,
                         solver='adam', activation='relu', learning_rate='constant',
                         hidden_layer_sizes=hidden_layer_sizes).fit(x_treino, y_treino)
     pred = regr.predict(x_teste)
+    score = regr.score(x_teste, y_teste)
+    mse = mean_squared_error(y_teste, pred)
+    print('learning_rate_init ', learning_rate_init)
+    print('beta_1 ', beta_1)
+    print('beta_2 ', beta_2)
+    print('epsilon ', epsilon)
+    print('hidden_layer_sizes ', hidden_layer_sizes)
+    print('r^2 ', score)
+    print('mean_squared_error ', mse)
     return pred
 
 
@@ -134,7 +143,8 @@ model.run()
 solution, solution_fitness, solution_idx = model.best_solution()
 print("Melhor indivíduo: {}".format(solution))
 print("Aptidão do melhor indivíduo: {}".format(solution_fitness))
-model.plot_fitness(title='Aptidão x Geração', ylabel='Aptidão', xlabel='Geração')
+model.plot_fitness(title='Aptidão x Geração',
+                   ylabel='Aptidão', xlabel='Geração')
 pred = predicao(solution)
 plt.plot(y_teste, pred, 'ro')
 x = np.linspace(0, 60, 100)
