@@ -1,3 +1,4 @@
+from numpy.core.shape_base import block
 import pandas as pd
 import numpy as np
 from pandas.plotting import scatter_matrix
@@ -79,14 +80,7 @@ def predicao(x):
     pred = regr.predict(x_teste)
     score = regr.score(x_teste, y_teste)
     mse = mean_squared_error(y_teste, pred)
-    print('learning_rate_init ', learning_rate_init)
-    print('beta_1 ', beta_1)
-    print('beta_2 ', beta_2)
-    print('epsilon ', epsilon)
-    print('hidden_layer_sizes ', hidden_layer_sizes)
-    print('r^2 ', score)
-    print('mean_squared_error ', mse)
-    return pred
+    return pred, learning_rate_init, beta_1, beta_2, epsilon, hidden_layer_sizes, score, mse
 
 
 NUM_GERACOES = 200
@@ -95,31 +89,8 @@ NUM_GENES = 118
 
 
 def on_start(model):
-    print('Algoritmo Genético Iniciado')
+    print('----------------------------------------------------------- Algoritmo Genético Iniciado -----------------------------------------------------------')
     print('Tamanho da população {}'.format(model.pop_size))
-    print('\n')
-
-
-def on_fitness(model, aptidoes):
-    print('Aptidões')
-    print(aptidoes)
-    solution, solution_fitness, solution_idx = model.best_solution()
-    print("Melhor indivíduo: {}".format(solution))
-    print("Aptidão do melhor indivíduo: {}".format(solution_fitness))
-    learning_rate_init = conversorBinarioReal(solution[:25])
-    beta_1 = conversorBinarioReal(solution[25:50])
-    beta_2 = conversorBinarioReal(solution[50:75])
-    epsilon = conversorBinarioReal(solution[75:100])
-    hidden_layer_sizes = (
-        conversorBinarioInteiro(solution[100:106]),
-        conversorBinarioInteiro(solution[106:112]),
-        conversorBinarioInteiro(solution[112:]))
-    print('learning_rate_init ', learning_rate_init)
-    print('beta_1 ', beta_1)
-    print('beta_2 ', beta_2)
-    print('epsilon ', epsilon)
-    print('hidden_layer_sizes ', hidden_layer_sizes)
-    print('\n')
 
 
 def on_generation(model):
@@ -127,29 +98,62 @@ def on_generation(model):
 
 
 def on_stop(model, aptidoesFinais):
-    print('Algoritmo Genético Finalizado')
+    print('----------------------------------------------------------- Algoritmo Genético Finalizado ----------------------------------------------------------')
 
 
-model = pygad.GA(num_generations=NUM_GERACOES, num_parents_mating=TAM_POP,
-                 fitness_func=aptidao, sol_per_pop=TAM_POP,
-                 num_genes=NUM_GENES, gene_type=int,
-                 init_range_low=0, init_range_high=2,
-                 parent_selection_type="tournament", K_tournament=3,
-                 keep_parents=0, crossover_type="single_point",
-                 crossover_probability=0.9, mutation_type="random", suppress_warnings=True,
-                 mutation_probability=0.05, on_start=on_start, on_stop=on_stop,
-                 on_generation=on_generation, on_fitness=on_fitness)
-model.run()
-solution, solution_fitness, solution_idx = model.best_solution()
-print("Melhor indivíduo: {}".format(solution))
-print("Aptidão do melhor indivíduo: {}".format(solution_fitness))
-model.plot_fitness(title='Aptidão x Geração',
-                   ylabel='Aptidão', xlabel='Geração')
-pred = predicao(solution)
-plt.plot(y_teste, pred, 'ro')
-x = np.linspace(0, 60, 100)
-plt.plot(x, x, 'b', )
-plt.xlabel('Valores reais')
-plt.ylabel('Valores calculados')
-plt.title('Real x Predição')
-plt.show()
+for i in range(20):
+    model = pygad.GA(num_generations=NUM_GERACOES, num_parents_mating=TAM_POP,
+                     fitness_func=aptidao, sol_per_pop=TAM_POP,
+                     num_genes=NUM_GENES, gene_type=int,
+                     init_range_low=0, init_range_high=2,
+                     parent_selection_type="tournament", K_tournament=3,
+                     keep_parents=0, crossover_type="single_point",
+                     crossover_probability=0.9, mutation_type="random", suppress_warnings=True,
+                     mutation_probability=0.05, on_start=on_start, on_stop=on_stop,
+                     on_generation=on_generation)
+    model.run()
+    solution, solution_fitness, solution_idx = model.best_solution()
+    pred, learning_rate_init, beta_1, beta_2, epsilon, hidden_layer_sizes, score, mse = predicao(
+        solution)
+
+    print("Melhor indivíduo: {}".format(solution))
+    print("Aptidão do melhor indivíduo: {}".format(solution_fitness))
+    print('learning_rate_init: ', learning_rate_init)
+    print('beta_1: ', beta_1)
+    print('beta_2: ', beta_2)
+    print('epsilon: ', epsilon)
+    print('hidden_layer_sizes: ', hidden_layer_sizes)
+    print('r^2: ', score)
+    print('mean_squared_error: ', mse)
+    print("\n")
+
+    plt.subplot(1, 2, 1)
+    plt.plot(model.best_solutions_fitness)
+    plt.title('Aptidão x Geração')
+    plt.xlabel('Geração')
+    plt.ylabel('Aptidão')
+    plt.subplot(1, 2, 2)
+    plt.plot(y_teste, pred, 'ro')
+    plt.plot(np.linspace(0, 60, 100), np.linspace(0, 60, 100), 'b')
+    plt.title('Real x Predição')
+    plt.xlabel('Real')
+    plt.ylabel('Predição')
+    plt.savefig('./images/{}.png'.format(i + 1), format="png")
+    plt.show(block=False)
+    plt.close()
+
+    arquivo = open("./testes.txt", "a")
+    arquivo.write(
+        '----------------------------------------------------------------------------------------------------------------------\n')
+    arquivo.write('Teste {}\n'.format(i + 1))
+    arquivo.write("Melhor indivíduo: {}\n".format(solution))
+    arquivo.write("Aptidão do melhor indivíduo: {}\n".format(solution_fitness))
+    arquivo.write('learning_rate_init: {}\n'.format(learning_rate_init))
+    arquivo.write('beta_1: {}\n'.format(beta_1))
+    arquivo.write('beta_2: {}\n'.format(beta_2))
+    arquivo.write('epsilon: {}\n'.format(epsilon))
+    arquivo.write('hidden_layer_sizes: {}\n'.format(hidden_layer_sizes))
+    arquivo.write('r^2: {}\n'.format(score))
+    arquivo.write('mean_squared_error: {}\n'.format(mse))
+    arquivo.write("\n")
+    arquivo.close()
