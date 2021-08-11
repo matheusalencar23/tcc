@@ -42,7 +42,7 @@ def conversorBinarioInteiro(binario):
         return int(1)
 
 
-MAX_ITER_RN = 1000
+MAX_ITER_RN = 10000
 
 
 def aptidao(x, i):
