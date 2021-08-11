@@ -57,7 +57,8 @@ def aptidao(x, i):
     regr = MLPRegressor(random_state=1, learning_rate_init=learning_rate_init,
                         max_iter=MAX_ITER_RN, beta_1=beta_1, beta_2=beta_2, epsilon=epsilon,
                         solver='adam', activation='relu', learning_rate='constant',
-                        hidden_layer_sizes=hidden_layer_sizes).fit(x_treino, y_treino)
+                        hidden_layer_sizes=hidden_layer_sizes, n_iter_no_change=20, tol=0.00001,
+                        early_stopping=True, validation_fraction=0.1).fit(x_treino, y_treino)
     score = regr.score(x_teste, y_teste)
     if score and score > 0:
         return score
@@ -76,7 +77,8 @@ def predicao(x):
     regr = MLPRegressor(random_state=1, learning_rate_init=learning_rate_init,
                         max_iter=MAX_ITER_RN, beta_1=beta_1, beta_2=beta_2, epsilon=epsilon,
                         solver='adam', activation='relu', learning_rate='constant',
-                        hidden_layer_sizes=hidden_layer_sizes).fit(x_treino, y_treino)
+                        hidden_layer_sizes=hidden_layer_sizes, n_iter_no_change=20, tol=0.00001,
+                        early_stopping=True, validation_fraction=0.1).fit(x_treino, y_treino)
     pred = regr.predict(x_teste)
     score = regr.score(x_teste, y_teste)
     mse = mean_squared_error(y_teste, pred)
