@@ -89,7 +89,7 @@ NUM_GENES = 118
 
 
 def on_start(model):
-    print('----------------------------------------------------------- Algoritmo Genético Iniciado -----------------------------------------------------------')
+    print('----------------------------------------------------- Algoritmo Genético Iniciado ------------------------------------------------------')
     print('Tamanho da população {}'.format(model.pop_size))
 
 
@@ -98,7 +98,7 @@ def on_generation(model):
 
 
 def on_stop(model, aptidoesFinais):
-    print('----------------------------------------------------------- Algoritmo Genético Finalizado ----------------------------------------------------------')
+    print('----------------------------------------------------- Algoritmo Genético Finalizado ----------------------------------------------------')
 
 
 for i in range(20):
@@ -110,7 +110,7 @@ for i in range(20):
                      keep_parents=0, crossover_type="single_point",
                      crossover_probability=0.9, mutation_type="random", suppress_warnings=True,
                      mutation_probability=0.05, on_start=on_start, on_stop=on_stop,
-                     on_generation=on_generation)
+                     on_generation=on_generation, stop_criteria="saturate_20")
     model.run()
     solution, solution_fitness, solution_idx = model.best_solution()
     pred, learning_rate_init, beta_1, beta_2, epsilon, hidden_layer_sizes, score, mse = predicao(
