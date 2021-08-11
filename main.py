@@ -57,7 +57,7 @@ def aptidao(x, i):
     regr = MLPRegressor(random_state=1, learning_rate_init=learning_rate_init,
                         max_iter=MAX_ITER_RN, beta_1=beta_1, beta_2=beta_2, epsilon=epsilon,
                         solver='adam', activation='relu', learning_rate='constant',
-                        hidden_layer_sizes=hidden_layer_sizes, n_iter_no_change=20, tol=0.00001,
+                        hidden_layer_sizes=hidden_layer_sizes, n_iter_no_change=25, tol=0.00001,
                         early_stopping=True, validation_fraction=0.1).fit(x_treino, y_treino)
     score = regr.score(x_teste, y_teste)
     if score and score > 0:
@@ -77,7 +77,7 @@ def predicao(x):
     regr = MLPRegressor(random_state=1, learning_rate_init=learning_rate_init,
                         max_iter=MAX_ITER_RN, beta_1=beta_1, beta_2=beta_2, epsilon=epsilon,
                         solver='adam', activation='relu', learning_rate='constant',
-                        hidden_layer_sizes=hidden_layer_sizes, n_iter_no_change=20, tol=0.00001,
+                        hidden_layer_sizes=hidden_layer_sizes, n_iter_no_change=25, tol=0.00001,
                         early_stopping=True, validation_fraction=0.1).fit(x_treino, y_treino)
     pred = regr.predict(x_teste)
     score = regr.score(x_teste, y_teste)
@@ -91,16 +91,18 @@ NUM_GENES = 118
 
 
 def on_start(model):
-    print('----------------------------------------------------- Algoritmo Genético Iniciado ------------------------------------------------------')
+    print('------------------------------------------------ Algoritmo Genético Iniciado -------------------------------------------------')
     print('Tamanho da população {}'.format(model.pop_size))
 
 
 def on_generation(model):
     print("Geração {}/{}".format(model.generations_completed, NUM_GERACOES))
+    solution, solution_fitness, solution_idx = model.best_solution()
+    print("Aptidão do melhor indivíduo: {}".format(solution_fitness))
 
 
 def on_stop(model, aptidoesFinais):
-    print('----------------------------------------------------- Algoritmo Genético Finalizado ----------------------------------------------------')
+    print('------------------------------------------------- Algoritmo Genético Finalizado ------------------------------------------------')
 
 
 for i in range(20):
@@ -112,7 +114,7 @@ for i in range(20):
                      keep_parents=0, crossover_type="single_point",
                      crossover_probability=0.9, mutation_type="random", suppress_warnings=True,
                      mutation_probability=0.05, on_start=on_start, on_stop=on_stop,
-                     on_generation=on_generation, stop_criteria="saturate_20")
+                     on_generation=on_generation, stop_criteria="saturate_25")
     model.run()
     solution, solution_fitness, solution_idx = model.best_solution()
     pred, learning_rate_init, beta_1, beta_2, epsilon, hidden_layer_sizes, score, mse = predicao(
