@@ -85,8 +85,8 @@ def predicao(x):
     return pred, learning_rate_init, beta_1, beta_2, epsilon, hidden_layer_sizes, score, mse
 
 
-NUM_GERACOES = 200
-TAM_POP = 100
+NUM_GERACOES = 500
+TAM_POP = 1000
 NUM_GENES = 118
 
 
@@ -105,7 +105,7 @@ def on_stop(model, aptidoesFinais):
     print('------------------------------------------------- Algoritmo Genético Finalizado ------------------------------------------------')
 
 
-for i in range(6, 20, 1):
+for i in range(20):
     print("------------------------------------------------- Iteração #{} ------------------------------------------------".format(i + 1))
     model = pygad.GA(num_generations=NUM_GERACOES, num_parents_mating=TAM_POP,
                      fitness_func=aptidao, sol_per_pop=TAM_POP,
