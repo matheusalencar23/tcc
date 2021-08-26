@@ -107,7 +107,7 @@ def on_stop(model, aptidoesFinais):
 
 for i in range(20):
     print("------------------------------------------------- Iteração #{} ------------------------------------------------".format(i + 1))
-    model = pygad.GA(num_generations=NUM_GERACOES, num_parents_mating=(TAM_POP - 10),
+    model = pygad.GA(num_generations=NUM_GERACOES, num_parents_mating=TAM_POP,
                      fitness_func=aptidao, sol_per_pop=TAM_POP,
                      num_genes=NUM_GENES, gene_type=int,
                      init_range_low=0, init_range_high=2,
