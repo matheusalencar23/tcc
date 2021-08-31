@@ -1,12 +1,13 @@
 from numpy.core.shape_base import block
 import pandas as pd
 import numpy as np
-from pandas.plotting import scatter_matrix
 import matplotlib.pyplot as plt
 from sklearn.neural_network import MLPRegressor
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_squared_error
 import pygad
+import sys
+sys.tracebacklimit = 0
 
 dados = pd.read_csv('./data.csv')
 velocidade = np.asarray(dados.iloc[:, 0])
@@ -18,8 +19,7 @@ resistencia = np.asarray(dados.iloc[:, 5])
 
 x = np.c_[velocidade, temperatura, preenchimento, espessura, orientacao]
 y = resistencia
-x_treino, x_teste, y_treino, y_teste = train_test_split(
-    x, y, train_size=0.9, test_size=0.1, random_state=1)
+x_treino, x_teste, y_treino, y_teste = train_test_split(x, y, train_size=0.9, random_state=1, stratify='k-fold')
 
 
 def conversorBinarioReal(binario):
@@ -42,7 +42,7 @@ def conversorBinarioInteiro(binario):
         return int(1)
 
 
-MAX_ITER_RN = 10000
+MAX_ITER_RN = 100
 
 
 def aptidao(x, i):
@@ -54,10 +54,10 @@ def aptidao(x, i):
         conversorBinarioInteiro(x[100:106]),
         conversorBinarioInteiro(x[106:112]),
         conversorBinarioInteiro(x[112:]))
-    regr = MLPRegressor(random_state=1, learning_rate_init=learning_rate_init,
+    regr = MLPRegressor(random_state=1, learning_rate_init=learning_rate_init, shuffle=True,
                         max_iter=MAX_ITER_RN, beta_1=beta_1, beta_2=beta_2, epsilon=epsilon,
                         solver='adam', activation='relu', learning_rate='constant',
-                        hidden_layer_sizes=hidden_layer_sizes, n_iter_no_change=25, tol=0.00001,
+                        hidden_layer_sizes=hidden_layer_sizes, n_iter_no_change=10, tol=0.00001,
                         early_stopping=True, validation_fraction=0.1).fit(x_treino, y_treino)
     score = regr.score(x_teste, y_teste)
     if score and score > 0:
@@ -74,10 +74,10 @@ def predicao(x):
         conversorBinarioInteiro(x[100:106]),
         conversorBinarioInteiro(x[106:112]),
         conversorBinarioInteiro(x[112:]))
-    regr = MLPRegressor(random_state=1, learning_rate_init=learning_rate_init,
+    regr = MLPRegressor(random_state=1, learning_rate_init=learning_rate_init, shuffle=True,
                         max_iter=MAX_ITER_RN, beta_1=beta_1, beta_2=beta_2, epsilon=epsilon,
                         solver='adam', activation='relu', learning_rate='constant',
-                        hidden_layer_sizes=hidden_layer_sizes, n_iter_no_change=25, tol=0.00001,
+                        hidden_layer_sizes=hidden_layer_sizes, n_iter_no_change=10, tol=0.00001,
                         early_stopping=True, validation_fraction=0.1).fit(x_treino, y_treino)
     pred = regr.predict(x_teste)
     score = regr.score(x_teste, y_teste)
@@ -99,23 +99,23 @@ def on_generation(model):
     print("Geração {}/{}".format(model.generations_completed, NUM_GERACOES))
     solution, solution_fitness, solution_idx = model.best_solution()
     print("Aptidão do melhor indivíduo: {}".format(solution_fitness))
+    print(model.last_generation_fitness)
 
 
 def on_stop(model, aptidoesFinais):
     print('------------------------------------------------- Algoritmo Genético Finalizado ------------------------------------------------')
 
 
-for i in range(20):
+for i in range(1):
     print("------------------------------------------------- Iteração #{} ------------------------------------------------".format(i + 1))
     model = pygad.GA(num_generations=NUM_GERACOES, num_parents_mating=TAM_POP,
-                     fitness_func=aptidao, sol_per_pop=TAM_POP,
+                     fitness_func=aptidao, sol_per_pop=TAM_POP, keep_parents=int(TAM_POP/4),
                      num_genes=NUM_GENES, gene_type=int,
                      init_range_low=0, init_range_high=2,
-                     parent_selection_type="tournament", K_tournament=3,
-                     keep_parents=0, crossover_type="single_point",
+                     parent_selection_type="tournament", K_tournament=3, crossover_type="two_points",
                      crossover_probability=0.9, mutation_type="random", suppress_warnings=True,
                      mutation_probability=0.05, on_start=on_start, on_stop=on_stop,
-                     on_generation=on_generation, stop_criteria="saturate_25")
+                     on_generation=on_generation, stop_criteria="saturate_10")
     model.run()
     solution, solution_fitness, solution_idx = model.best_solution()
     pred, learning_rate_init, beta_1, beta_2, epsilon, hidden_layer_sizes, score, mse = predicao(
