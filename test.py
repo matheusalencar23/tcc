@@ -18,18 +18,44 @@ x = np.c_[velocidade, temperatura, preenchimento, espessura, orientacao]
 y = resistencia
 x_treino, x_teste, y_treino, y_teste = train_test_split(x, y, train_size=0.9, random_state=1)
 
-def regr(x, y):
-    regr = MLPRegressor(random_state=1, learning_rate_init=0.0130024254322052, shuffle=True,
-                        max_iter=100, beta_1=0.7986843287944794, beta_2=0.6038900017738342,
-                        epsilon=0.17187657952308655, solver='adam', activation='relu', 
-                        learning_rate='constant', hidden_layer_sizes=(52, 30, 59), 
-                        n_iter_no_change=10, tol=0.00001, early_stopping=True, 
-                        validation_fraction=0.1).fit(x, y)
+def conversorBinarioReal(binario):
+    v = 0
+    for i in range(len(binario)):
+        v += binario[i] * (2 ** (- i - 1))
+    if v > 0:
+        return v
+    else:
+        return v + 0.0000000001
+
+
+def conversorBinarioInteiro(binario):
+    v = 0
+    for i in range(len(binario)):
+        v += binario[len(binario) - i - 1] * 2**(i)
+    if v > 0:
+        return int(v)
+    else:
+        return int(1)
+
+def regr(ind, x, y):
+    learning_rate_init = conversorBinarioReal(ind[:25])
+    beta_1 = conversorBinarioReal(ind[25:50])
+    beta_2 = conversorBinarioReal(ind[50:75])
+    epsilon = conversorBinarioReal(ind[75:100])
+    hidden_layer_sizes = (
+        conversorBinarioInteiro(ind[100:106]),
+        conversorBinarioInteiro(ind[106:112]),
+        conversorBinarioInteiro(ind[112:]))
+    regr = MLPRegressor(random_state=1, learning_rate_init=learning_rate_init, shuffle=True,
+                        max_iter=100, beta_1=beta_1, beta_2=beta_2, epsilon=epsilon,
+                        solver='adam', activation='relu', learning_rate='constant',
+                        hidden_layer_sizes=hidden_layer_sizes, n_iter_no_change=10, tol=0.00001,
+                        early_stopping=True, validation_fraction=0.1).fit(x, y)
     return regr
 
-
-regr_treino = regr(x_treino, y_treino)
-regr_teste = regr(x_teste, y_teste)
+ind = []
+regr_treino = regr(ind, x_treino, y_treino)
+regr_teste = regr(ind, x_teste, y_teste)
 pred_treino = regr_treino.predict(x_treino)
 pred_teste = regr_teste.predict(x_teste)
 print('R^2 treino: {}'.format(regr_teste.score(x_treino, y_treino)))
