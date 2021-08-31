@@ -19,7 +19,7 @@ resistencia = np.asarray(dados.iloc[:, 5])
 
 x = np.c_[velocidade, temperatura, preenchimento, espessura, orientacao]
 y = resistencia
-x_treino, x_teste, y_treino, y_teste = train_test_split(x, y, train_size=0.9, random_state=1, stratify='k-fold')
+x_treino, x_teste, y_treino, y_teste = train_test_split(x, y, train_size=0.9, random_state=1)
 
 
 def conversorBinarioReal(binario):
