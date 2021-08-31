@@ -16,37 +16,15 @@ resistencia = np.asarray(dados.iloc[:, 5])
 
 x = np.c_[velocidade, temperatura, preenchimento, espessura, orientacao]
 y = resistencia
-x_treino, x_teste, y_treino, y_teste = train_test_split(
-    x, y, train_size=0.9, test_size=0.1, random_state=1)
-
-
-def conversorBinarioReal(binario):
-    v = 0
-    for i in range(len(binario)):
-        v += binario[i] * (2 ** (- i - 1))
-    if v > 0:
-        return v
-    else:
-        return v + 0.0000000001
-
-
-def conversorBinarioInteiro(binario):
-    v = 0
-    for i in range(len(binario)):
-        v += binario[len(binario) - i - 1] * 2**(i)
-    if v > 0:
-        return int(v)
-    else:
-        return int(1)
-
+x_treino, x_teste, y_treino, y_teste = train_test_split(x, y, train_size=0.9, random_state=1)
 
 def regr(x, y):
-    regr = MLPRegressor(random_state=1, learning_rate_init=0.015641212463378906,
-                        max_iter=100, beta_1=0.7583017647266388, beta_2=0.505889892578125,
-                        epsilon=0.6357423067092896, solver='adam',
-                        activation='relu', learning_rate='constant',
-                        hidden_layer_sizes=(9, 40, 42), n_iter_no_change=10, tol=0.000001,
-                        early_stopping=True, validation_fraction=0.1).fit(x, y)
+    regr = MLPRegressor(random_state=1, learning_rate_init=0.0130024254322052, shuffle=True,
+                        max_iter=100, beta_1=0.7986843287944794, beta_2=0.6038900017738342,
+                        epsilon=0.17187657952308655, solver='adam', activation='relu', 
+                        learning_rate='constant', hidden_layer_sizes=(52, 30, 59), 
+                        n_iter_no_change=10, tol=0.00001, early_stopping=True, 
+                        validation_fraction=0.1).fit(x, y)
     return regr
 
 

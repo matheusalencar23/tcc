@@ -1,4 +1,3 @@
-from numpy.core.shape_base import block
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
@@ -6,8 +5,6 @@ from sklearn.neural_network import MLPRegressor
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_squared_error
 import pygad
-import sys
-sys.tracebacklimit = 0
 
 dados = pd.read_csv('./data.csv')
 velocidade = np.asarray(dados.iloc[:, 0])
@@ -106,7 +103,7 @@ def on_stop(model, aptidoesFinais):
     print('------------------------------------------------- Algoritmo Genético Finalizado ------------------------------------------------')
 
 
-for i in range(1):
+for i in range(50):
     print("------------------------------------------------- Iteração #{} ------------------------------------------------".format(i + 1))
     model = pygad.GA(num_generations=NUM_GERACOES, num_parents_mating=TAM_POP,
                      fitness_func=aptidao, sol_per_pop=TAM_POP, keep_parents=int(TAM_POP/4),
