@@ -101,7 +101,7 @@ def on_stop(model, aptidoesFinais):
     print('------------------------------------------------- Algoritmo Genético Finalizado ------------------------------------------------')
 
 
-for i in range(20):
+for i in range(10):
     print("------------------------------------------------- Iteração #{} ------------------------------------------------".format(i + 1))
     model = pygad.GA(num_generations=NUM_GERACOES, num_parents_mating=TAM_POP,
                      fitness_func=aptidao, sol_per_pop=TAM_POP, keep_parents=int(TAM_POP/4),
