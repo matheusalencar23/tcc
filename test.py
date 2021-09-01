@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 from sklearn.neural_network import MLPRegressor
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_squared_error
+from sklearn.metrics import explained_variance_score
 
 
 dados = pd.read_csv('./data.csv')
@@ -47,21 +48,25 @@ def regr(ind, x, y):
         conversorBinarioInteiro(ind[106:112]),
         conversorBinarioInteiro(ind[112:]))
     regr = MLPRegressor(random_state=1, learning_rate_init=learning_rate_init, shuffle=True,
-                        max_iter=100, beta_1=beta_1, beta_2=beta_2, epsilon=epsilon,
+                        max_iter=10000, beta_1=beta_1, beta_2=beta_2, epsilon=epsilon,
                         solver='adam', activation='relu', learning_rate='constant',
-                        hidden_layer_sizes=hidden_layer_sizes, n_iter_no_change=10, tol=0.00001,
-                        early_stopping=True, validation_fraction=0.1).fit(x, y)
+                        hidden_layer_sizes=hidden_layer_sizes).fit(x, y)
     return regr
 
-ind = []
+ind = np.asarray([0,0,0,0,0,0,1,0,0,0,0,1,0,1,0,0,0,0,0,0,0,0,0,0,0,1,0,1,0,0,0,0,0,1,
+                  0,0,0,1,0,0,0,0,0,1,1,0,0,0,0,0,1,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,1,0,
+                  1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,
+                  0,1,1,1,1,0,1,1,0,1,0,1,1,0,0,1,0])
 regr_treino = regr(ind, x_treino, y_treino)
 regr_teste = regr(ind, x_teste, y_teste)
 pred_treino = regr_treino.predict(x_treino)
 pred_teste = regr_teste.predict(x_teste)
 print('R^2 treino: {}'.format(regr_teste.score(x_treino, y_treino)))
 print('MSE treino: {}'.format(mean_squared_error(pred_treino, y_treino)))
+print('EVS treino: {}'.format(explained_variance_score(pred_treino, y_treino)))
 print('R^2 teste: {}'.format(regr_teste.score(x_teste, y_teste)))
 print('MSE teste: {}'.format(mean_squared_error(pred_teste, y_teste)))
+print('EVS teste: {}'.format(explained_variance_score(pred_teste, y_teste)))
 
 plt.subplot(1, 2, 1)
 plt.plot(regr_treino.loss_curve_, 'r')

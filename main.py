@@ -54,12 +54,10 @@ def aptidao(x, i):
     regr = MLPRegressor(random_state=1, learning_rate_init=learning_rate_init, shuffle=True,
                         max_iter=MAX_ITER_RN, beta_1=beta_1, beta_2=beta_2, epsilon=epsilon,
                         solver='adam', activation='relu', learning_rate='constant',
-                        hidden_layer_sizes=hidden_layer_sizes, n_iter_no_change=10, tol=0.00001,
+                        hidden_layer_sizes=hidden_layer_sizes, n_iter_no_change=25, tol=0.00001,
                         early_stopping=True, validation_fraction=0.1).fit(x_treino, y_treino)
     score = regr.score(x_teste, y_teste)
-    if score and score > 0:
-        return score
-    return 0
+    return score
 
 
 def predicao(x):
@@ -74,7 +72,7 @@ def predicao(x):
     regr = MLPRegressor(random_state=1, learning_rate_init=learning_rate_init, shuffle=True,
                         max_iter=MAX_ITER_RN, beta_1=beta_1, beta_2=beta_2, epsilon=epsilon,
                         solver='adam', activation='relu', learning_rate='constant',
-                        hidden_layer_sizes=hidden_layer_sizes, n_iter_no_change=10, tol=0.00001,
+                        hidden_layer_sizes=hidden_layer_sizes, n_iter_no_change=25, tol=0.00001,
                         early_stopping=True, validation_fraction=0.1).fit(x_treino, y_treino)
     pred = regr.predict(x_teste)
     score = regr.score(x_teste, y_teste)
@@ -103,7 +101,7 @@ def on_stop(model, aptidoesFinais):
     print('------------------------------------------------- Algoritmo Genético Finalizado ------------------------------------------------')
 
 
-for i in range(50):
+for i in range(20):
     print("------------------------------------------------- Iteração #{} ------------------------------------------------".format(i + 1))
     model = pygad.GA(num_generations=NUM_GERACOES, num_parents_mating=TAM_POP,
                      fitness_func=aptidao, sol_per_pop=TAM_POP, keep_parents=int(TAM_POP/4),
