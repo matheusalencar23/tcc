@@ -1,3 +1,4 @@
+from numpy.core.fromnumeric import size
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
@@ -80,7 +81,7 @@ def predicao(x):
     return pred, learning_rate_init, beta_1, beta_2, epsilon, hidden_layer_sizes, score, mse
 
 
-NUM_GERACOES = 500
+NUM_GERACOES = 1000
 TAM_POP = 100
 NUM_GENES = 118
 
@@ -128,6 +129,7 @@ for i in range(10):
     print("\n")
 
     plt.subplot(1, 2, 1)
+    plt.subplots_adjust(wspace=0.25)
     plt.plot(model.best_solutions_fitness)
     plt.title('Aptidão x Geração')
     plt.xlabel('Geração')

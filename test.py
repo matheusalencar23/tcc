@@ -50,6 +50,7 @@ def regr(ind, x, y):
         conversorBinarioInteiro(ind[100:106]),
         conversorBinarioInteiro(ind[106:112]),
         conversorBinarioInteiro(ind[112:]))
+    print(learning_rate_init, beta_1, beta_2, epsilon, hidden_layer_sizes)
     regr = MLPRegressor(random_state=1, learning_rate_init=learning_rate_init, shuffle=True,
                         max_iter=100, beta_1=beta_1, beta_2=beta_2, epsilon=epsilon,
                         solver='adam', activation='relu', learning_rate='constant',
@@ -57,10 +58,8 @@ def regr(ind, x, y):
     return regr
 
 
-ind = np.asarray([0,0,0,0,0,0,1,0,0,1,1,0,0,0,0,0,0,1,0,0,1,0,1,0,1,1,1,0,0,1,0,0,1,0,0,1,0
-,1,0,0,1,0,0,0,0,0,1,0,0,0,1,1,0,0,0,0,0,0,0,0,0,1,1,1,1,0,1,0,1,0,0,0,0,0
-,1,0,0,0,0,0,1,1,1,0,0,0,1,1,0,0,0,0,0,0,1,0,1,0,0,0,1,0,0,0,0,0,0,1,1,1,0
-,0,0,1,0,1,1,0])
+ind = np.asarray([0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 1, 1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 1, 1, 1, 0, 1, 0,
+                 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1, 0, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 1, 1, 1, 0, 1, 0, 1, 0, 0, 1])
 regr_treino = regr(ind, x_treino, y_treino)
 regr_teste = regr(ind, x_teste, y_teste)
 pred_treino = regr_treino.predict(x_treino)
