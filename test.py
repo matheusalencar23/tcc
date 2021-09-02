@@ -17,7 +17,9 @@ resistencia = np.asarray(dados.iloc[:, 5])
 
 x = np.c_[velocidade, temperatura, preenchimento, espessura, orientacao]
 y = resistencia
-x_treino, x_teste, y_treino, y_teste = train_test_split(x, y, train_size=0.9, random_state=1)
+x_treino, x_teste, y_treino, y_teste = train_test_split(
+    x, y, train_size=0.9, random_state=1)
+
 
 def conversorBinarioReal(binario):
     v = 0
@@ -38,6 +40,7 @@ def conversorBinarioInteiro(binario):
     else:
         return int(1)
 
+
 def regr(ind, x, y):
     learning_rate_init = conversorBinarioReal(ind[:25])
     beta_1 = conversorBinarioReal(ind[25:50])
@@ -48,15 +51,16 @@ def regr(ind, x, y):
         conversorBinarioInteiro(ind[106:112]),
         conversorBinarioInteiro(ind[112:]))
     regr = MLPRegressor(random_state=1, learning_rate_init=learning_rate_init, shuffle=True,
-                        max_iter=10000, beta_1=beta_1, beta_2=beta_2, epsilon=epsilon,
+                        max_iter=100, beta_1=beta_1, beta_2=beta_2, epsilon=epsilon,
                         solver='adam', activation='relu', learning_rate='constant',
                         hidden_layer_sizes=hidden_layer_sizes).fit(x, y)
     return regr
 
-ind = np.asarray([0,0,0,0,0,0,1,0,0,0,0,1,0,1,0,0,0,0,0,0,0,0,0,0,0,1,0,1,0,0,0,0,0,1,
-                  0,0,0,1,0,0,0,0,0,1,1,0,0,0,0,0,1,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,1,0,
-                  1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,
-                  0,1,1,1,1,0,1,1,0,1,0,1,1,0,0,1,0])
+
+ind = np.asarray([0,0,0,0,0,0,1,0,0,1,1,0,0,0,0,0,0,1,0,0,1,0,1,0,1,1,1,0,0,1,0,0,1,0,0,1,0
+,1,0,0,1,0,0,0,0,0,1,0,0,0,1,1,0,0,0,0,0,0,0,0,0,1,1,1,1,0,1,0,1,0,0,0,0,0
+,1,0,0,0,0,0,1,1,1,0,0,0,1,1,0,0,0,0,0,0,1,0,1,0,0,0,1,0,0,0,0,0,0,1,1,1,0
+,0,0,1,0,1,1,0])
 regr_treino = regr(ind, x_treino, y_treino)
 regr_teste = regr(ind, x_teste, y_teste)
 pred_treino = regr_treino.predict(x_treino)
@@ -69,8 +73,8 @@ print('MSE teste: {}'.format(mean_squared_error(pred_teste, y_teste)))
 print('EVS teste: {}'.format(explained_variance_score(pred_teste, y_teste)))
 
 plt.subplot(1, 2, 1)
-plt.plot(regr_treino.loss_curve_, 'r')
-plt.plot(regr_teste.loss_curve_, 'g')
+plt.plot(regr_treino.loss_curve_, 'g')
+plt.plot(regr_teste.loss_curve_, 'r')
 plt.subplot(1, 2, 2)
 plt.plot(np.linspace(0, 60, 100), np.linspace(0, 60, 100), 'b')
 plt.plot(y_treino, pred_treino, 'go')

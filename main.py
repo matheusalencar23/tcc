@@ -16,7 +16,7 @@ resistencia = np.asarray(dados.iloc[:, 5])
 
 x = np.c_[velocidade, temperatura, preenchimento, espessura, orientacao]
 y = resistencia
-x_treino, x_teste, y_treino, y_teste = train_test_split(x, y, train_size=0.9, random_state=1)
+x_treino, x_teste, y_treino, y_teste = train_test_split(x, y, train_size=0.8, random_state=1)
 
 
 def conversorBinarioReal(binario):
@@ -81,7 +81,7 @@ def predicao(x):
 
 
 NUM_GERACOES = 500
-TAM_POP = 100
+TAM_POP = 1000
 NUM_GENES = 118
 
 
