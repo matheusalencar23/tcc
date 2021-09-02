@@ -81,7 +81,7 @@ def predicao(x):
 
 
 NUM_GERACOES = 500
-TAM_POP = 1000
+TAM_POP = 100
 NUM_GENES = 118
 
 
