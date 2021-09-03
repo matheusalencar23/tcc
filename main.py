@@ -7,6 +7,12 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_squared_error
 import pygad
 
+MAX_ITER_RN = 100
+NUM_GERACOES = 1000
+TAM_POP = 100
+NUM_GENES = 118
+TAM_TREINO = 0.9
+
 dados = pd.read_csv('./data.csv')
 velocidade = np.asarray(dados.iloc[:, 0])
 temperatura = np.asarray(dados.iloc[:, 1])
@@ -17,7 +23,7 @@ resistencia = np.asarray(dados.iloc[:, 5])
 
 x = np.c_[velocidade, temperatura, preenchimento, espessura, orientacao]
 y = resistencia
-x_treino, x_teste, y_treino, y_teste = train_test_split(x, y, train_size=0.8, random_state=1)
+x_treino, x_teste, y_treino, y_teste = train_test_split(x, y, train_size=TAM_TREINO, random_state=1)
 
 
 def conversorBinarioReal(binario):
@@ -39,8 +45,6 @@ def conversorBinarioInteiro(binario):
     else:
         return int(1)
 
-
-MAX_ITER_RN = 100
 
 
 def aptidao(x, i):
@@ -81,9 +85,6 @@ def predicao(x):
     return pred, learning_rate_init, beta_1, beta_2, epsilon, hidden_layer_sizes, score, mse
 
 
-NUM_GERACOES = 1000
-TAM_POP = 100
-NUM_GENES = 118
 
 
 def on_start(model):
