@@ -1,4 +1,3 @@
-from numpy.core.fromnumeric import size
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
@@ -6,6 +5,11 @@ from sklearn.neural_network import MLPRegressor
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_squared_error
 import pygad
+import os
+from datetime import datetime
+
+ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
+FILE_DIR = os.path.join(ROOT_DIR, 'data.csv')
 
 MAX_ITER_RN = 100
 NUM_GERACOES = 1000
@@ -13,7 +17,7 @@ TAM_POP = 1000
 NUM_GENES = 118
 TAM_TREINO = 0.9
 
-dados = pd.read_csv('./data.csv')
+dados = pd.read_csv(FILE_DIR)
 velocidade = np.asarray(dados.iloc[:, 0])
 temperatura = np.asarray(dados.iloc[:, 1])
 preenchimento = np.asarray(dados.iloc[:, 2])
@@ -88,7 +92,7 @@ def predicao(x):
 
 
 def on_start(model):
-    print('------------------------------------------------ Algoritmo Genético Iniciado -------------------------------------------------')
+    print('----------------------- Algoritmo Genético Iniciado {} -------------------------'.format(datetime.today()))
     print('Tamanho da população {}'.format(model.pop_size))
 
 
@@ -100,10 +104,10 @@ def on_generation(model):
 
 
 def on_stop(model, aptidoesFinais):
-    print('------------------------------------------------- Algoritmo Genético Finalizado ------------------------------------------------')
+    print('--------------------- Algoritmo Genético Finalizado {} -----------------------'.format(datetime.today()))
 
 
-for i in range(10):
+for i in range(1):
     print("------------------------------------------------- Iteração #{} ------------------------------------------------".format(i + 1))
     model = pygad.GA(num_generations=NUM_GERACOES, num_parents_mating=TAM_POP,
                      fitness_func=aptidao, sol_per_pop=TAM_POP, keep_parents=int(TAM_POP/4),
