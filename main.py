@@ -93,6 +93,9 @@ def predicao(x):
 
 def on_start(model):
     print('----------------------- Algoritmo Genético Iniciado {} -------------------------'.format(datetime.today()))
+    arquivo = open("./tempos.txt", "a")
+    arquivo.write('----------------------- Algoritmo Genético Iniciado {} -------------------------\n'.format(datetime.today()))
+    arquivo.close()
     print('Tamanho da população {}'.format(model.pop_size))
 
 
@@ -105,7 +108,9 @@ def on_generation(model):
 
 def on_stop(model, aptidoesFinais):
     print('--------------------- Algoritmo Genético Finalizado {} -----------------------'.format(datetime.today()))
-
+    arquivo = open("./tempos.txt", "a")
+    arquivo.write('----------------------- Algoritmo Genético Finalizado {} -------------------------\n'.format(datetime.today()))
+    arquivo.close()
 
 for i in range(1):
     print("------------------------------------------------- Iteração #{} ------------------------------------------------".format(i + 1))
