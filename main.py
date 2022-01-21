@@ -16,7 +16,8 @@ MAX_ITER_RN = 100
 NUM_GERACOES = 1000
 NUM_GENES = 118
 TAM_TREINO = 0.9
-TAMS_POPS = [10, 100, 1000, 5000, 10000]
+TAMS_POPS = [5, 10, 15]
+NUM_EXEC = 1
 
 dados = pd.read_csv(FILE_DIR)
 velocidade = np.asarray(dados.iloc[:, 0])
@@ -120,7 +121,7 @@ with open(os.path.join(ROOT_DIR, 'tabela_dados.csv'), 'a', newline='') as file:
     writer.writerow(['Tamanho da população', 'Teste', 'Melhor indivíduo', 'Aptidão do melhor indivíduo',
                     'learning_rate_init', 'beta_1', 'beta_2', 'epsilon', 'hidden_layer_sizes', 'r^2', 'mean_squared_error'])
     for tam_pop in TAMS_POPS:
-        for i in range(1):
+        for i in range(NUM_EXEC):
             print("------------------------------------------------- Iteração #{} ------------------------------------------------".format(i + 1))
             model = pygad.GA(num_generations=NUM_GERACOES, num_parents_mating=tam_pop,
                                 fitness_func=aptidao, sol_per_pop=tam_pop, keep_parents=int(
@@ -163,7 +164,7 @@ with open(os.path.join(ROOT_DIR, 'tabela_dados.csv'), 'a', newline='') as file:
                 os.makedirs(os.path.join(ROOT_DIR, 'images'))
             plt.savefig(os.path.join(ROOT_DIR, 'images', '{}_{}.png'.format(tam_pop, i + 1)), format="png")
             # plt.show(block=False)
-            # plt.close()
+            plt.close()
 
             arquivo = open(os.path.join(ROOT_DIR, "testes.txt"), "a")
             arquivo.write(
