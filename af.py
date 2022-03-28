@@ -37,14 +37,14 @@ def regr():
 
 regressao = regr()
 while True:
-    nova_velocidade = float(input("Qual a velocidade de impressão(mm/s)?\n"))
-    nova_temperatura = float(input("Qual a temperatura de extrusão(°C)?\n"))
-    novo_preenchimento = float(input("Qual a densidade de preenchimento(%)?\n"))
-    nova_espessura = float(input("Qual a espessura do filemento extrudado(mm)?\n"))
-    nova_orientacao = float(input("Qual a orientação de extrusão(°)?\n"))
+    nova_velocidade = float(input("What is the printing speed(mm/s)?\n"))
+    nova_temperatura = float(input("What is the extrusion temperature(°C)?\n"))
+    novo_preenchimento = float(input("What is the fill density(%)?\n"))
+    nova_espessura = float(input("What is the thickness of the extruded filament(mm)?\n"))
+    nova_orientacao = float(input("What is the extrusion orientation?(°)?\n"))
     nova_entrada = [nova_velocidade, nova_temperatura,
                     novo_preenchimento, nova_espessura, nova_orientacao]
     nova_entrada = np.reshape(nova_entrada, (1, -1))
     print(nova_entrada)
     predicao = regressao.predict(nova_entrada)
-    print(predicao)
+    print("The tensile strength is: {} MPa".format(predicao))

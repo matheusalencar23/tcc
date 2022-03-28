@@ -59,10 +59,8 @@ def regr(ind, x, y):
     return regr
 
 
-ind = np.asarray([0,0,0,0,0,0,1,1,1,0,0,1,1,0,1,0,0,0,0,1,0,0,1,0,0,1,1,0,1,1,1,0,0,1,1,0,0
-,0,1,1,0,1,1,1,0,0,0,0,0,0,1,1,0,0,1,1,0,1,0,0,1,0,0,1,0,0,0,1,0,1,0,0,0,0
-,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,1,1,0,0,0
-,1,1,0,0,0,0,0])
+ind = np.asarray([0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 1, 0, 0, 1, 0, 1, 1, 0, 1, 0, 0, 0, 1, 1, 1, 1, 0, 1, 1, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0,
+                 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0])
 regr_treino = regr(ind, x_treino, y_treino)
 regr_teste = regr(ind, x_teste, y_teste)
 pred_treino = regr_treino.predict(x_treino)
@@ -74,13 +72,17 @@ print('R^2 teste: {}'.format(regr_teste.score(x_teste, y_teste)))
 print('MSE teste: {}'.format(mean_squared_error(pred_teste, y_teste)))
 print('EVS teste: {}'.format(explained_variance_score(pred_teste, y_teste)))
 
-tamanho = len(regr_treino.loss_curve_) if (len(regr_treino.loss_curve_) < len(regr_teste.loss_curve_)) else len(regr_teste.loss_curve_)
+tamanho = len(regr_treino.loss_curve_) if (len(regr_treino.loss_curve_) < len(
+    regr_teste.loss_curve_)) else len(regr_teste.loss_curve_)
 
-plt.plot(regr_treino.loss_curve_[:tamanho - 1], 'g--', linewidth=1, label="Treino")
-plt.plot(regr_teste.loss_curve_[:tamanho - 1], 'r--', linewidth=1, label="Teste")
-plt.xlabel('Geração')
-plt.ylabel('Perda')
-plt.title('Função Perda')
+plt.plot(regr_treino.loss_curve_[:tamanho - 1],
+         'g--', linewidth=1, label="Train")
+plt.plot(regr_teste.loss_curve_[:tamanho - 1],
+         'r--', linewidth=1, label="Test")
+plt.xlabel('Generation', fontsize=16)
+plt.ylabel('Lost', fontsize=16)
 plt.grid()
-plt.legend()
+plt.legend(fontsize=14)
+plt.xticks(fontsize=12)
+plt.yticks(fontsize=12)
 plt.show()

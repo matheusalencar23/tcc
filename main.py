@@ -8,6 +8,7 @@ import pygad
 import os
 from datetime import datetime
 import csv
+from helpers import conversorBinarioInteiro, conversorBinarioReal
 
 ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
 FILE_DIR = os.path.join(ROOT_DIR, 'data.csv')
@@ -16,8 +17,8 @@ MAX_ITER_RN = 100
 NUM_GERACOES = 1000
 NUM_GENES = 118
 TAM_TREINO = 0.9
-TAMS_POPS = [5, 10, 15]
-NUM_EXEC = 1
+TAMS_POPS = [100, 500, 1000]
+NUM_EXEC = 10
 
 dados = pd.read_csv(FILE_DIR)
 velocidade = np.asarray(dados.iloc[:, 0])
@@ -31,27 +32,6 @@ x = np.c_[velocidade, temperatura, preenchimento, espessura, orientacao]
 y = resistencia
 x_treino, x_teste, y_treino, y_teste = train_test_split(
     x, y, train_size=TAM_TREINO, random_state=1)
-
-
-def conversorBinarioReal(binario):
-    v = 0
-    for i in range(len(binario)):
-        v += binario[i] * (2 ** (- i - 1))
-    if v > 0:
-        return v
-    else:
-        return v + 0.0000000001
-
-
-def conversorBinarioInteiro(binario):
-    v = 0
-    for i in range(len(binario)):
-        v += binario[len(binario) - i - 1] * 2**(i)
-    if v > 0:
-        return int(v)
-    else:
-        return int(1)
-
 
 def aptidao(x, i):
     learning_rate_init = conversorBinarioReal(x[:25])
