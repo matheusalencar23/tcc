@@ -14,8 +14,10 @@ resistencia = np.asarray(dados.iloc[:, 5])
 x = np.c_[velocidade, temperatura, preenchimento, espessura, orientacao]
 y = resistencia
 
-ind = np.asarray([0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 1, 0, 0, 1, 0, 1, 1, 0, 1, 0, 0, 0, 1, 1, 1, 1, 0, 1, 1, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0,
-                 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0])
+arr = [0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0,
+       0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0]
+
+ind = np.asarray(arr)
 
 
 def regr():
@@ -40,7 +42,8 @@ while True:
     nova_velocidade = float(input("What is the printing speed(mm/s)?\n"))
     nova_temperatura = float(input("What is the extrusion temperature(°C)?\n"))
     novo_preenchimento = float(input("What is the fill density(%)?\n"))
-    nova_espessura = float(input("What is the thickness of the extruded filament(mm)?\n"))
+    nova_espessura = float(
+        input("What is the thickness of the extruded filament(mm)?\n"))
     nova_orientacao = float(input("What is the extrusion orientation?(°)?\n"))
     nova_entrada = [nova_velocidade, nova_temperatura,
                     novo_preenchimento, nova_espessura, nova_orientacao]
