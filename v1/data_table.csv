@@ -1,4 +1,4 @@
-Tamanho da população,Teste,Melhor indivíduo,Aptidão do melhor indivíduo,learning_rate_init,beta_1,beta_2,epsilon,hidden_layer_sizes,r^2,mean_squared_error
+Pop size,Test,Best individual,Best fitness,learning_rate_init,beta_1,beta_2,epsilon,hidden_layer_sizes,r^2,mean_squared_error
 100,1,"[0 0 0 0 0 1 0 0 0 0 0 1 0 1 0 0 1 0 1 1 1 0 0 0 1 1 1 0 0 1 0 0 1 0 0 0 1
  0 0 0 1 0 0 0 0 0 0 1 0 0 1 1 0 0 1 0 0 0 1 1 0 0 0 0 0 0 0 0 1 0 0 1 0 0
  1 0 0 0 0 0 1 0 0 0 0 0 0 0 0 1 0 1 1 0 1 0 1 1 0 1 0 0 1 0 0 1 1 0 1 0 1

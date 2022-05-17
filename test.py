@@ -6,56 +6,37 @@ from sklearn.neural_network import MLPRegressor
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_squared_error
 from sklearn.metrics import explained_variance_score
-
-arr = [0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,1,0,0,1,0,0,0,0,0,1,1,1,0,1,0,0,0,0,0,0,0,0
-,1,0,0,0,0,0,0,0,1,0,0,1,1,1,1,0,0,1,1,0,0,1,1,0,0,1,0,0,0,0,1,0,0,1,0,0,1
-,1,0,0,0,0,1,1,0,0,1,0,0,1,0,0,0,0,0,0,0,0,0,0,1,0,0,1,0,0,0,0,0,1,0,0,0,0
-,0,1,1,1,0,1,0]
+from helpers import binary_to_integer, binary_to_real
 
 
-dados = pd.read_csv('./data.csv')
-velocidade = np.asarray(dados.iloc[:, 0])
-temperatura = np.asarray(dados.iloc[:, 1])
-preenchimento = np.asarray(dados.iloc[:, 2])
-espessura = np.asarray(dados.iloc[:, 3])
-orientacao = np.asarray(dados.iloc[:, 4])
-resistencia = np.asarray(dados.iloc[:, 5])
+arr = [0,0,0,0,0,0,1,0,1,0,0,0,1,0,0,1,1,0,0,0,0,0,1,0,0,1,1,1,0,0,1,0,0,0,1,1,0
+,0,0,0,0,0,0,1,0,0,0,1,0,0,1,1,0,1,0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,1,0,0,1,0
+,0,0,0,0,0,0,1,0,0,0,0,1,0,0,1,0,0,0,1,1,0,1,0,1,0,0,1,0,1,0,0,1,0,1,0,0,0
+,1,1,0,1,1,0,0]
 
-x = np.c_[velocidade, temperatura, preenchimento, espessura, orientacao]
-y = resistencia
-x_treino, x_teste, y_treino, y_teste = train_test_split(
+
+data = pd.read_csv('./data.csv')
+speed = np.asarray(dados.iloc[:, 0])
+temperature = np.asarray(data.iloc[:, 1])
+fill = np.asarray(data.iloc[:, 2])
+thickness = np.asarray(data.iloc[:, 3])
+orientation = np.asarray(data.iloc[:, 4])
+tensile = np.asarray(data.iloc[:, 5])
+
+x = np.c_[speed, temperature, fill, thickness, orientation]
+y = tensile
+x_train, x_test, y_train, y_test = train_test_split(
     x, y, train_size=0.9, random_state=1)
 
-
-def conversorBinarioReal(binario):
-    v = 0
-    for i in range(len(binario)):
-        v += binario[i] * (2 ** (- i - 1))
-    if v > 0:
-        return v
-    else:
-        return v + 0.0000000001
-
-
-def conversorBinarioInteiro(binario):
-    v = 0
-    for i in range(len(binario)):
-        v += binario[len(binario) - i - 1] * 2**(i)
-    if v > 0:
-        return int(v)
-    else:
-        return int(1)
-
-
 def regr(ind, x, y):
-    learning_rate_init = conversorBinarioReal(ind[:25])
-    beta_1 = conversorBinarioReal(ind[25:50])
-    beta_2 = conversorBinarioReal(ind[50:75])
-    epsilon = conversorBinarioReal(ind[75:100])
+    learning_rate_init = binary_to_real(ind[:25])
+    beta_1 = binary_to_real(ind[25:50])
+    beta_2 = binary_to_real(ind[50:75])
+    epsilon = binary_to_real(ind[75:100])
     hidden_layer_sizes = (
-        conversorBinarioInteiro(ind[100:106]),
-        conversorBinarioInteiro(ind[106:112]),
-        conversorBinarioInteiro(ind[112:]))
+        binary_to_integer(ind[100:106]),
+        binary_to_integer(ind[106:112]),
+        binary_to_integer(ind[112:]))
     print(learning_rate_init, beta_1, beta_2, epsilon, hidden_layer_sizes)
     regr = MLPRegressor(random_state=1, learning_rate_init=learning_rate_init, shuffle=True,
                         max_iter=1000, beta_1=beta_1, beta_2=beta_2, epsilon=epsilon,
@@ -65,23 +46,23 @@ def regr(ind, x, y):
 
 
 ind = np.asarray(arr)
-regr_treino = regr(ind, x_treino, y_treino)
-regr_teste = regr(ind, x_teste, y_teste)
-pred_treino = regr_treino.predict(x_treino)
-pred_teste = regr_teste.predict(x_teste)
-print('R^2 treino: {}'.format(regr_teste.score(x_treino, y_treino)))
-print('MSE treino: {}'.format(mean_squared_error(pred_treino, y_treino)))
-print('EVS treino: {}'.format(explained_variance_score(pred_treino, y_treino)))
-print('R^2 teste: {}'.format(regr_teste.score(x_teste, y_teste)))
-print('MSE teste: {}'.format(mean_squared_error(pred_teste, y_teste)))
-print('EVS teste: {}'.format(explained_variance_score(pred_teste, y_teste)))
+regr_train = regr(ind, x_train, y_train)
+regr_test = regr(ind, x_test, y_test)
+pred_train = regr_train.predict(x_train)
+pred_test = regr_test.predict(x_test)
+print('R^2 train: {}'.format(regr_test.score(x_train, y_train)))
+print('MSE train: {}'.format(mean_squared_error(pred_train, y_train)))
+print('EVS train: {}'.format(explained_variance_score(pred_train, y_train)))
+print('R^2 test: {}'.format(regr_test.score(x_test, y_test)))
+print('MSE test: {}'.format(mean_squared_error(pred_test, y_test)))
+print('EVS test: {}'.format(explained_variance_score(pred_test, y_test)))
 
-tamanho = len(regr_treino.loss_curve_) if (len(regr_treino.loss_curve_) < len(
-    regr_teste.loss_curve_)) else len(regr_teste.loss_curve_)
+tamanho = len(regr_train.loss_curve_) if (len(regr_train.loss_curve_) < len(
+    regr_test.loss_curve_)) else len(regr_test.loss_curve_)
 
-plt.plot(regr_treino.loss_curve_[:tamanho - 1],
+plt.plot(regr_train.loss_curve_[:tamanho - 1],
          'g--', linewidth=1, label="Train")
-plt.plot(regr_teste.loss_curve_[:tamanho - 1],
+plt.plot(regr_test.loss_curve_[:tamanho - 1],
          'r--', linewidth=1, label="Test")
 plt.xlabel('Generation', fontsize=16)
 plt.ylabel('Lost', fontsize=16)

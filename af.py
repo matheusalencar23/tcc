@@ -3,16 +3,16 @@ import numpy as np
 import helpers
 from sklearn.neural_network import MLPRegressor
 
-dados = pd.read_csv('./data.csv')
-velocidade = np.asarray(dados.iloc[:, 0])
-temperatura = np.asarray(dados.iloc[:, 1])
-preenchimento = np.asarray(dados.iloc[:, 2])
-espessura = np.asarray(dados.iloc[:, 3])
-orientacao = np.asarray(dados.iloc[:, 4])
-resistencia = np.asarray(dados.iloc[:, 5])
+data = pd.read_csv('./data.csv')
+speed = np.asarray(data.iloc[:, 0])
+temperature = np.asarray(data.iloc[:, 1])
+fill = np.asarray(data.iloc[:, 2])
+thickness = np.asarray(data.iloc[:, 3])
+orientation = np.asarray(data.iloc[:, 4])
+tensile = np.asarray(data.iloc[:, 5])
 
-x = np.c_[velocidade, temperatura, preenchimento, espessura, orientacao]
-y = resistencia
+x = np.c_[speed, temperature, fill, thickness, orientation]
+y = tensile
 
 arr = [0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0,
        0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0]
@@ -21,14 +21,14 @@ ind = np.asarray(arr)
 
 
 def regr():
-    learning_rate_init = helpers.conversorBinarioReal(ind[:25])
-    beta_1 = helpers.conversorBinarioReal(ind[25:50])
-    beta_2 = helpers.conversorBinarioReal(ind[50:75])
-    epsilon = helpers.conversorBinarioReal(ind[75:100])
+    learning_rate_init = helpers.binary_to_real(ind[:25])
+    beta_1 = helpers.binary_to_real(ind[25:50])
+    beta_2 = helpers.binary_to_real(ind[50:75])
+    epsilon = helpers.binary_to_real(ind[75:100])
     hidden_layer_sizes = (
-        helpers.conversorBinarioInteiro(ind[100:106]),
-        helpers.conversorBinarioInteiro(ind[106:112]),
-        helpers.conversorBinarioInteiro(ind[112:]))
+        helpers.binary_to_integer(ind[100:106]),
+        helpers.binary_to_integer(ind[106:112]),
+        helpers.binary_to_integer(ind[112:]))
     print(learning_rate_init, beta_1, beta_2, epsilon, hidden_layer_sizes)
     regr = MLPRegressor(random_state=1, learning_rate_init=learning_rate_init, shuffle=True,
                         max_iter=1000, beta_1=beta_1, beta_2=beta_2, epsilon=epsilon,

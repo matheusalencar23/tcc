@@ -8,102 +8,102 @@ import pygad
 import os
 from datetime import datetime
 import csv
-from helpers import conversorBinarioInteiro, conversorBinarioReal
+from helpers import binary_to_integer, binary_to_real
 
 ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
 FILE_DIR = os.path.join(ROOT_DIR, 'data.csv')
 
-MAX_ITER_RN = 100
-NUM_GERACOES = 1000
+MAX_ITER_NN = 100
+NUM_GENERATIONS = 1000
 NUM_GENES = 118
-TAM_TREINO = 0.7
-TAMS_POPS = [100, 500, 1000]
+TRAINING_SIZE = 0.7
+POP_SIZE = [100, 500, 1000]
 NUM_EXEC = 10
 
-dados = pd.read_csv(FILE_DIR)
-velocidade = np.asarray(dados.iloc[:, 0])
-temperatura = np.asarray(dados.iloc[:, 1])
-preenchimento = np.asarray(dados.iloc[:, 2])
-espessura = np.asarray(dados.iloc[:, 3])
-orientacao = np.asarray(dados.iloc[:, 4])
-resistencia = np.asarray(dados.iloc[:, 5])
+data = pd.read_csv(FILE_DIR)
+speed = np.asarray(data.iloc[:, 0])
+temperature = np.asarray(data.iloc[:, 1])
+fill = np.asarray(data.iloc[:, 2])
+thickness = np.asarray(data.iloc[:, 3])
+orientation = np.asarray(data.iloc[:, 4])
+tensile = np.asarray(data.iloc[:, 5])
 
-x = np.c_[velocidade, temperatura, preenchimento, espessura, orientacao]
-y = resistencia
-x_treino, x_teste, y_treino, y_teste = train_test_split(
-    x, y, train_size=TAM_TREINO, random_state=1)
+x = np.c_[speed, temperature, fill, thickness, orientation]
+y = tensile
+x_train, x_test, y_train, y_test = train_test_split(
+    x, y, train_size=TRAINING_SIZE, random_state=1)
 
 def aptidao(x, i):
-    learning_rate_init = conversorBinarioReal(x[:25])
-    beta_1 = conversorBinarioReal(x[25:50])
-    beta_2 = conversorBinarioReal(x[50:75])
-    epsilon = conversorBinarioReal(x[75:100])
+    learning_rate_init = binary_to_real(x[:25])
+    beta_1 = binary_to_real(x[25:50])
+    beta_2 = binary_to_real(x[50:75])
+    epsilon = binary_to_real(x[75:100])
     hidden_layer_sizes = (
-        conversorBinarioInteiro(x[100:106]),
-        conversorBinarioInteiro(x[106:112]),
-        conversorBinarioInteiro(x[112:]))
+        binary_to_integer(x[100:106]),
+        binary_to_integer(x[106:112]),
+        binary_to_integer(x[112:]))
     regr = MLPRegressor(random_state=1, learning_rate_init=learning_rate_init, shuffle=True,
-                        max_iter=MAX_ITER_RN, beta_1=beta_1, beta_2=beta_2, epsilon=epsilon,
+                        max_iter=MAX_ITER_NN, beta_1=beta_1, beta_2=beta_2, epsilon=epsilon,
                         solver='adam', activation='relu', learning_rate='constant',
                         hidden_layer_sizes=hidden_layer_sizes, n_iter_no_change=25, tol=0.00001,
-                        early_stopping=True, validation_fraction=0.1).fit(x_treino, y_treino)
-    score = regr.score(x_teste, y_teste)
+                        early_stopping=True, validation_fraction=0.1).fit(x_train, y_train)
+    score = regr.score(x_test, y_test)
     return score
 
 
 def predicao(x):
-    learning_rate_init = conversorBinarioReal(x[:25])
-    beta_1 = conversorBinarioReal(x[25:50])
-    beta_2 = conversorBinarioReal(x[50:75])
-    epsilon = conversorBinarioReal(x[75:100])
+    learning_rate_init = binary_to_real(x[:25])
+    beta_1 = binary_to_real(x[25:50])
+    beta_2 = binary_to_real(x[50:75])
+    epsilon = binary_to_real(x[75:100])
     hidden_layer_sizes = (
-        conversorBinarioInteiro(x[100:106]),
-        conversorBinarioInteiro(x[106:112]),
-        conversorBinarioInteiro(x[112:]))
+        binary_to_integer(x[100:106]),
+        binary_to_integer(x[106:112]),
+        binary_to_integer(x[112:]))
     regr = MLPRegressor(random_state=1, learning_rate_init=learning_rate_init, shuffle=True,
-                        max_iter=MAX_ITER_RN, beta_1=beta_1, beta_2=beta_2, epsilon=epsilon,
+                        max_iter=MAX_ITER_NN, beta_1=beta_1, beta_2=beta_2, epsilon=epsilon,
                         solver='adam', activation='relu', learning_rate='constant',
                         hidden_layer_sizes=hidden_layer_sizes, n_iter_no_change=25, tol=0.00001,
-                        early_stopping=True, validation_fraction=0.1).fit(x_treino, y_treino)
-    pred = regr.predict(x_teste)
-    score = regr.score(x_teste, y_teste)
-    mse = mean_squared_error(y_teste, pred)
+                        early_stopping=True, validation_fraction=0.1).fit(x_train, y_train)
+    pred = regr.predict(x_test)
+    score = regr.score(x_test, y_test)
+    mse = mean_squared_error(y_test, pred)
     return pred, learning_rate_init, beta_1, beta_2, epsilon, hidden_layer_sizes, score, mse
 
 
 def on_start(model):
-    print('----------------------- Algoritmo Genético Iniciado {} -------------------------'.format(datetime.today()))
-    arquivo = open(os.path.join(ROOT_DIR, "./tempos.txt"), "a")
+    print('----------------------- GA Started {} -------------------------'.format(datetime.today()))
+    arquivo = open(os.path.join(ROOT_DIR, "./times.txt"), "a")
     arquivo.write(
-        '----------------------- Algoritmo Genético Iniciado {} -------------------------\n'.format(datetime.today()))
-    arquivo.write('Tamanho da população {}\n'.format(model.pop_size))
+        '----------------------- GA Started {} -------------------------\n'.format(datetime.today()))
+    arquivo.write('Pop size {}\n'.format(model.pop_size))
     arquivo.close()
-    print('Tamanho da população {}'.format(model.pop_size))
+    print('Pop size {}'.format(model.pop_size))
 
 
 def on_generation(model):
-    print("Geração {}/{}".format(model.generations_completed, NUM_GERACOES))
+    print("Generation {}/{}".format(model.generations_completed, NUM_GENERATIONS))
     solution, solution_fitness, solution_idx = model.best_solution()
-    print("Aptidão do melhor indivíduo: {}".format(solution_fitness))
+    print("Best fitness: {}".format(solution_fitness))
     print(model.last_generation_fitness)
 
 
 def on_stop(model, aptidoesFinais):
-    print('--------------------- Algoritmo Genético Finalizado {} -----------------------'.format(datetime.today()))
-    arquivo = open(os.path.join(ROOT_DIR, "./tempos.txt"), "a")
+    print('--------------------- GA Finished {} -----------------------'.format(datetime.today()))
+    arquivo = open(os.path.join(ROOT_DIR, "./times.txt"), "a")
     arquivo.write(
-        '----------------------- Algoritmo Genético Finalizado {} -------------------------\n'.format(datetime.today()))
+        '----------------------- GA Finished {} -------------------------\n'.format(datetime.today()))
     arquivo.close()
 
 
-with open(os.path.join(ROOT_DIR, 'tabela_dados.csv'), 'a', newline='') as file:
+with open(os.path.join(ROOT_DIR, 'data_table.csv'), 'a', newline='') as file:
     writer = csv.writer(file)
-    writer.writerow(['Tamanho da população', 'Teste', 'Melhor indivíduo', 'Aptidão do melhor indivíduo',
+    writer.writerow(['Pop size', 'Test', 'Best individual', 'Best fitness',
                     'learning_rate_init', 'beta_1', 'beta_2', 'epsilon', 'hidden_layer_sizes', 'r^2', 'mean_squared_error'])
-    for tam_pop in TAMS_POPS:
+    for tam_pop in POP_SIZE:
         for i in range(NUM_EXEC):
             print("------------------------------------------------- Iteração #{} ------------------------------------------------".format(i + 1))
-            model = pygad.GA(num_generations=NUM_GERACOES, num_parents_mating=tam_pop,
+            model = pygad.GA(num_generations=NUM_GENERATIONS, num_parents_mating=tam_pop,
                                 fitness_func=aptidao, sol_per_pop=tam_pop, keep_parents=int(
                                     tam_pop/4),
                                 num_genes=NUM_GENES, gene_type=int,
@@ -117,8 +117,8 @@ with open(os.path.join(ROOT_DIR, 'tabela_dados.csv'), 'a', newline='') as file:
             pred, learning_rate_init, beta_1, beta_2, epsilon, hidden_layer_sizes, score, mse = predicao(
                 solution)
 
-            print("Melhor indivíduo: {}".format(solution))
-            print("Aptidão do melhor indivíduo: {}".format(solution_fitness))
+            print("Best individual: {}".format(solution))
+            print("Best fitness: {}".format(solution_fitness))
             print('learning_rate_init: ', learning_rate_init)
             print('beta_1: ', beta_1)
             print('beta_2: ', beta_2)
@@ -131,13 +131,13 @@ with open(os.path.join(ROOT_DIR, 'tabela_dados.csv'), 'a', newline='') as file:
             plt.subplot(1, 2, 1)
             plt.subplots_adjust(wspace=0.25)
             plt.plot(model.best_solutions_fitness)
-            plt.title('Aptidão x Geração ({})'.format(tam_pop))
-            plt.xlabel('Geração')
-            plt.ylabel('Aptidão')
+            plt.title('Fitness x Generation ({})'.format(tam_pop))
+            plt.xlabel('Generation')
+            plt.ylabel('Fitness')
             plt.subplot(1, 2, 2)
-            plt.plot(y_teste, pred, 'ro')
+            plt.plot(y_test, pred, 'ro')
             plt.plot(np.linspace(0, 60, 100), np.linspace(0, 60, 100), 'b')
-            plt.title('Real x Predição ({})'.format(tam_pop))
+            plt.title('Real x Predict ({})'.format(tam_pop))
             plt.xlabel('Real')
             plt.ylabel('Predição')
             if not os.path.exists(os.path.join(ROOT_DIR, 'images')):
@@ -146,14 +146,14 @@ with open(os.path.join(ROOT_DIR, 'tabela_dados.csv'), 'a', newline='') as file:
             # plt.show(block=False)
             plt.close()
 
-            arquivo = open(os.path.join(ROOT_DIR, "testes.txt"), "a")
+            arquivo = open(os.path.join(ROOT_DIR, "tests.txt"), "a")
             arquivo.write(
                 '----------------------------------------------------------------------------------------------------------------------\n')
-            arquivo.write('Tamanho da população {}\n'.format(tam_pop))
-            arquivo.write('Teste {}\n'.format(i + 1))
-            arquivo.write("Melhor indivíduo: {}\n".format(solution))
+            arquivo.write('Pop size {}\n'.format(tam_pop))
+            arquivo.write('Test {}\n'.format(i + 1))
+            arquivo.write("Best individual: {}\n".format(solution))
             arquivo.write(
-                "Aptidão do melhor indivíduo: {}\n".format(solution_fitness))
+                "Best fitness: {}\n".format(solution_fitness))
             arquivo.write(
                 'learning_rate_init: {}\n'.format(learning_rate_init))
             arquivo.write('beta_1: {}\n'.format(beta_1))
